@@ -4,14 +4,16 @@ import java.time.LocalDate
 import java.util.*
 
 class DataManager {
-    private var _dailyCovidsByDate = mutableMapOf<Date, MutableList<DailyCovid>>()
-    public val DailyCovidsByDate get() = this._dailyCovidsByDate
+    companion object {
+        private var _dailyCovidsByDate = listOf<Pair<Date, MutableList<DailyCovid>>>()
+        public val DailyCovidsByDate get() = this._dailyCovidsByDate
+    }
 
     public fun LoadData(): Boolean {
         // TODO: Load data from CSV or Database
 
         try {
-            _dailyCovidsByDate = LoadTestData()
+            _dailyCovidsByDate = LoadTestData().toList()
             return true
         } catch (ex: Exception) {
             // TODO: Errorhandling or logging

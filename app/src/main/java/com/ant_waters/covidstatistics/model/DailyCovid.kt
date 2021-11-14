@@ -2,5 +2,5 @@ package com.ant_waters.covidstatistics.model
 
 import java.util.*
 
-class DailyCovid (country: Country, date: Date, covidCases: Int, covidDeaths: Int) {
+class DailyCovid (val country: Country, val date: Date, val covidCases: Int, val covidDeaths: Int) {
 }

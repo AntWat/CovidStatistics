@@ -8,8 +8,11 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.ant_waters.covidstatistics.R
+import com.ant_waters.covidstatistics.adapters.DailyDataItemAdapter
 import com.ant_waters.covidstatistics.databinding.FragmentHomeBinding
+import com.ant_waters.covidstatistics.model.DataManager
 
 class HomeFragment : Fragment() {
 
@@ -31,10 +34,17 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
+        //val textView: TextView = binding.textHome
+        val recyclerView = binding.recyclerView
+        recyclerView.adapter = DailyDataItemAdapter(this, DataManager.DailyCovidsByDate)
+
+        // Use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        recyclerView.setHasFixedSize(true)
+
+//        homeViewModel.text.observe(viewLifecycleOwner, Observer {
+//            textView.text = it
+//        })
         return root
     }
 

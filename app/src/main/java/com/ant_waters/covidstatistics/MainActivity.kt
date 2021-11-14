@@ -1,6 +1,7 @@
 package com.ant_waters.covidstatistics
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
@@ -15,6 +16,8 @@ import com.ant_waters.covidstatistics.databinding.ActivityMainBinding
 import com.ant_waters.covidstatistics.model.DataManager
 
 class MainActivity : AppCompatActivity() {
+
+    val LOG_TAG = "CovidStatistics_MainAct"
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
@@ -51,7 +54,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun config()
     {
+        Log.i(LOG_TAG, "config: Starting")
+
         _dataManager.LoadData()
+
+        Log.i(LOG_TAG, "config: Finished")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

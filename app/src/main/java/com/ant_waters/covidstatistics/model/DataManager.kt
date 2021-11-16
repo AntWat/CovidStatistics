@@ -5,8 +5,17 @@ import java.util.*
 
 class DataManager {
     companion object {
+        lateinit var DateStart: Date
+        lateinit var DateEnd: Date
+
         private var _dailyCovidsByDate = listOf<Pair<Date, MutableList<DailyCovid>>>()
         public val DailyCovidsByDate get() = this._dailyCovidsByDate
+
+        private lateinit var _countryAggregates: CountryAggregates
+        public val CountryAggregates get() = this._countryAggregates
+
+        val PopulationScaler = 100000      // cases are usally reported per 100k of population
+        val PopulationScalerLabel = "100k"
     }
 
     public fun LoadData(): Boolean {
@@ -14,6 +23,7 @@ class DataManager {
 
         try {
             _dailyCovidsByDate = LoadTestData().toList()
+            _countryAggregates = CountryAggregates(DateStart, DateEnd, _dailyCovidsByDate)
             return true
         } catch (ex: Exception) {
             // TODO: Errorhandling or logging
@@ -26,10 +36,10 @@ class DataManager {
         val dailyCovidsByDate = mutableMapOf<Date, MutableList<DailyCovid>>()
 
         // TODO: The date iteration here is dodgy, but the recommended version won't work on my test phone (Android 6/api 23)
-        val start = Date(2019, 12, 31)
-        val end = Date(2020, 12, 14)
+        DateStart = Date(2019, 12, 31)
+        DateEnd = Date(2020, 12, 14)
 
-        iterateBetweenDatesJava7(start, end,
+        iterateBetweenDatesJava7(DateStart, DateEnd,
             fun(d: Date) {
                 val daylies = mutableListOf<DailyCovid>()
                 for (c in countries) {

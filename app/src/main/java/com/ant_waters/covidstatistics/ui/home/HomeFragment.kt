@@ -36,7 +36,7 @@ class HomeFragment : Fragment() {
 
         //val textView: TextView = binding.textHome
         val recyclerView = binding.recyclerView
-        recyclerView.adapter = DailyDataItemAdapter(this, DataManager.DailyCovidsByDate)
+        recyclerView.adapter = DailyDataItemAdapter(this, DataManager.CountryAggregates)
 
         // Use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView

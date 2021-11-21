@@ -16,6 +16,9 @@ import com.ant_waters.covidstatistics.databinding.ActivityMainBinding
 import com.ant_waters.covidstatistics.model.DataManager
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        var MainPackageName = ""
+    }
 
     val LOG_TAG = "CovidStatistics_MainAct"
 
@@ -56,7 +59,9 @@ class MainActivity : AppCompatActivity() {
     {
         Log.i(LOG_TAG, "config: Starting")
 
-        _dataManager.LoadData()
+        MainActivity.MainPackageName = this.packageName
+
+        _dataManager.LoadData(this)
 
         Log.i(LOG_TAG, "config: Finished")
     }

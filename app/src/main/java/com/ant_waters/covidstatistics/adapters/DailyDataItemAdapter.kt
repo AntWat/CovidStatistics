@@ -22,7 +22,7 @@ import java.text.DecimalFormat
 import java.util.*
 
 class DailyDataItemAdapter(private val context: Fragment,
-                           private val countryAggregates : CountryAggregates
+                           private val countryAggregates : CountryAggregates?
 )
     : RecyclerView.Adapter<DailyDataItemAdapter.ItemViewHolder>(){
 
@@ -43,6 +43,8 @@ class DailyDataItemAdapter(private val context: Fragment,
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         //if (dailyCovidsByDate == null) return
+
+        if (countryAggregates == null) { return }
 
         val kvp = countryAggregates.Aggregates[position]
         holder.countryView.text = kvp.first.name
@@ -70,7 +72,7 @@ class DailyDataItemAdapter(private val context: Fragment,
         return "${prefix}${df.format((stat))} per ${DataManager.PopulationScalerLabel}"
     }
 
-    override fun getItemCount() = countryAggregates.Aggregates.count()
+    override fun getItemCount() = countryAggregates?.Aggregates?.count()?:0
 
 
 }

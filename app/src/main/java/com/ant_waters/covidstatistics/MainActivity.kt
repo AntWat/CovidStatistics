@@ -1,5 +1,6 @@
 package com.ant_waters.covidstatistics
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -14,6 +15,8 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.ant_waters.covidstatistics.databinding.ActivityMainBinding
 import com.ant_waters.covidstatistics.model.DataManager
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -61,7 +64,8 @@ class MainActivity : AppCompatActivity() {
 
         MainActivity.MainPackageName = this.packageName
 
-        _dataManager.LoadData(this)
+        val context: Context = this
+        GlobalScope.launch { _dataManager.LoadData(context) }
 
         Log.i(LOG_TAG, "config: Finished")
     }

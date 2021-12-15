@@ -42,31 +42,75 @@ class DataManager {
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     private fun LoadDataFromDatabase(context: Context): Boolean {
-        // TODO: Load data from CSV or Database
+        Log.i(MainActivity.LOG_TAG, "LoadDataFromDatabase: Started")
 
         try {
             val covidDatabase = CovidDatabase.getDatabase(context)
 
+            // ---------------------------
+            Log.i(MainActivity.LOG_TAG, "Loading countries")
             val dbCountries = covidDatabase.countryDao().getAll()
 
-            val mapCountries = mutableMapOf</*name*/String, Country>()
+            val mapCountriesByName = mutableMapOf</*name*/String, Country>()
+            val mapCountriesByGeoId = mutableMapOf</*geoId*/String, Country>()
 
             for (dbc in dbCountries)
             {
                 val cdata: country_data? = covidDatabase.country_dataDao().findByGeoId(dbc.geoId)
 
-                mapCountries.put(dbc.name!!, Country(dbc, cdata?.population_2019?:0))
+                val c = Country(dbc, cdata?.population_2019?:0)
+                mapCountriesByName.put(dbc.name!!, c)
+                mapCountriesByGeoId.put(dbc.geoId!!, c)
             }
+
+            // ---------------------------
+            Log.i(MainActivity.LOG_TAG, "Loading daily data")
+            val dbCovid_data = covidDatabase.covid_dataDao().getAll()
+
+            val dailyCovidsByDate = mutableMapOf<Date, MutableList<DailyCovid>>()
+
+            var dateStart: Date? = null
+            var dateEnd: Date? = null
+
+            for (dbcd in dbCovid_data)
+            {
+                if (mapCountriesByGeoId.containsKey(dbcd.geoId))
+                {
+                    val c: Country = mapCountriesByGeoId[dbcd.geoId]!!
+
+                    val d = SimpleDateFormat("yyyy-MM-dd").parse(dbcd.dateRep)
+                    if ( (dateStart == null) || (d < dateStart) ) { dateStart = d }
+                    if ( (dateEnd == null) || (d > dateEnd) ) { dateEnd = d }
+
+                    if (!dailyCovidsByDate.containsKey(d)) {
+                        dailyCovidsByDate.put(d, mutableListOf<DailyCovid>())
+                    }
+                    val cases:Int = dbcd.cases?:0
+                    val deaths:Int = dbcd.deaths?:0
+
+                    dailyCovidsByDate[d]!!.add(DailyCovid(c, d, cases, deaths))
+                }
+            }
+
+            DateStart = dateStart!!
+            DateEnd = dateEnd!!
+            _dailyCovidsByDate  = dailyCovidsByDate.toList()
 
             //val countries = LoadCountries_HardCoded()
 
-            _dailyCovidsByDate = LoadCasesFromCsvButMakeUpDeaths(context, mapCountries).toList()
+            //_dailyCovidsByDate = LoadCasesFromCsvButMakeUpDeaths(context, mapCountries).toList()
             //_dailyCovidsByDate = LoadTestData(countries).toList()
 
+            // ---------------------------
+            Log.i(MainActivity.LOG_TAG, "Creating aggregates")
             _countryAggregates.SetData(DateStart, DateEnd, _dailyCovidsByDate)
+
+            // ---------------------------
+            Log.i(MainActivity.LOG_TAG, "LoadDataFromDatabase: Finished")
             return true
         } catch (ex: Exception) {
-            // TODO: Errorhandling or logging
+            Log.i(MainActivity.LOG_TAG, "Error: ${ex.message}")
+            // TODO: Errorhandling?
             return false
         }
     }

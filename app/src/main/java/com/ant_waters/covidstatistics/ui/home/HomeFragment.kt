@@ -1,6 +1,7 @@
 package com.ant_waters.covidstatistics.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.ant_waters.covidstatistics.MainActivity
 import com.ant_waters.covidstatistics.R
 import com.ant_waters.covidstatistics.adapters.DailyDataItemAdapter
 import com.ant_waters.covidstatistics.databinding.FragmentHomeBinding
@@ -41,6 +43,12 @@ class HomeFragment : Fragment() {
         // Use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         recyclerView.setHasFixedSize(true)
+
+        MainActivity.DataInitialised.observe(viewLifecycleOwner, Observer {
+            Log.i(MainActivity.LOG_TAG, "Observer: Started")
+            binding.recyclerView.adapter?.notifyItemRangeInserted(0,
+                DataManager.CountryAggregates?.Aggregates?.size?:0)
+        })
 
 //        homeViewModel.text.observe(viewLifecycleOwner, Observer {
 //            textView.text = it

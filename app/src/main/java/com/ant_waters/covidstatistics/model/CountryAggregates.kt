@@ -8,7 +8,7 @@ class CountryAggregates {
 
     var Aggregates = mutableListOf<Pair<Country, CountryAggregate>>()
 
-    constructor(dateStart: Date, dateEnd: Date,
+    fun SetData(dateStart: Date, dateEnd: Date,
                 dailyCovidsByDate: List<Pair<Date, MutableList<DailyCovid>>>) {
         DateStart = dateStart
         DateEnd = dateEnd

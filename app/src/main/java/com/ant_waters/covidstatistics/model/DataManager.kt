@@ -1,10 +1,14 @@
 package com.ant_waters.covidstatistics.model
 
 import android.content.Context
+import android.util.Log
+import com.ant_waters.covidstatistics.MainActivity
 import java.util.*
 import com.ant_waters.covidstatistics.Utils.readCsv
 import com.ant_waters.covidstatistics.database.country_data
 import com.ant_waters.dbroomtest.database.CovidDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.InputStream
 import java.text.SimpleDateFormat
 import kotlin.math.ceil
@@ -18,7 +22,7 @@ class DataManager {
         private var _dailyCovidsByDate = listOf<Pair<Date, MutableList<DailyCovid>>>()
         val DailyCovidsByDate get() = this._dailyCovidsByDate
 
-        private var _countryAggregates: CountryAggregates? = null
+        private var _countryAggregates: CountryAggregates = CountryAggregates()
         val CountryAggregates get() = this._countryAggregates
 
         val PopulationScaler = 100000      // cases are usually reported per 100k of population
@@ -29,14 +33,15 @@ class DataManager {
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     suspend fun LoadData(context: Context): Boolean {
-        return LoadDataFromDatabase(context)
+        return withContext(Dispatchers.IO)
+        {LoadDataFromDatabase(context)}
         //return LoadDataFromCsv(context)
     }
 
 
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-    private suspend fun LoadDataFromDatabase(context: Context): Boolean {
+    private fun LoadDataFromDatabase(context: Context): Boolean {
         // TODO: Load data from CSV or Database
 
         try {
@@ -58,7 +63,7 @@ class DataManager {
             _dailyCovidsByDate = LoadCasesFromCsvButMakeUpDeaths(context, mapCountries).toList()
             //_dailyCovidsByDate = LoadTestData(countries).toList()
 
-            _countryAggregates = CountryAggregates(DateStart, DateEnd, _dailyCovidsByDate)
+            _countryAggregates.SetData(DateStart, DateEnd, _dailyCovidsByDate)
             return true
         } catch (ex: Exception) {
             // TODO: Errorhandling or logging
@@ -77,7 +82,7 @@ class DataManager {
             _dailyCovidsByDate = LoadCasesFromCsvButMakeUpDeaths(context, countries).toList()
             //_dailyCovidsByDate = LoadTestData(countries).toList()
 
-            _countryAggregates = CountryAggregates(DateStart, DateEnd, _dailyCovidsByDate)
+            _countryAggregates.SetData(DateStart, DateEnd, _dailyCovidsByDate)
             return true
         } catch (ex: Exception) {
             // TODO: Errorhandling or logging
@@ -108,11 +113,17 @@ class DataManager {
 
                 for (i:Int in 1..row.count()-1) {
                     val c: Country? = countries[csv.Headers[i]]
-                    if (c == null) { throw Exception("Header is not a recognised country: '${csv.Headers[i]}'") }
-                    val numCases:Int = if (row[i] == "") 0 else row[i].toInt()
-                    daylies.add(DailyCovid(c, d,
-                        numCases,
-                        /*TODO*/ceil(numCases * .01).toInt()))
+                    if (c == null)
+                    {
+                        Log.e(MainActivity.LOG_TAG,"Header is not a recognised country: '${csv.Headers[i]}'")
+                        //throw Exception("Header is not a recognised country: '${csv.Headers[i]}'")
+                    }
+                    else {
+                        val numCases:Int = if (row[i] == "") 0 else row[i].toInt()
+                        daylies.add(DailyCovid(c, d,
+                            numCases,
+                            /*TODO*/ceil(numCases * .01).toInt()))
+                    }
                 }
                 dailyCovidsByDate.put(d, daylies)
             }

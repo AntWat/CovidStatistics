@@ -13,6 +13,10 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.ant_waters.covidstatistics.databinding.ActivityMainBinding
 import com.ant_waters.covidstatistics.model.DataManager
 import kotlinx.coroutines.GlobalScope
@@ -20,10 +24,14 @@ import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     companion object {
+        val LOG_TAG = "CovidStatistics_MainAct"
         var MainPackageName = ""
-    }
 
-    val LOG_TAG = "CovidStatistics_MainAct"
+        val _dataInitialised = MutableLiveData<Boolean>().apply {
+            value = false
+        }
+        val DataInitialised: LiveData<Boolean> = _dataInitialised
+    }
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
@@ -33,7 +41,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        config()
+        _dataInitialised.setValue(false)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -56,6 +64,8 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        config()
     }
 
     private fun config()
@@ -65,7 +75,11 @@ class MainActivity : AppCompatActivity() {
         MainActivity.MainPackageName = this.packageName
 
         val context: Context = this
-        GlobalScope.launch { _dataManager.LoadData(context) }
+        GlobalScope.launch {
+            _dataManager.LoadData(context)
+            Log.i(LOG_TAG, "LoadData: Finished")
+            _dataInitialised.postValue(true)
+        }
 
         Log.i(LOG_TAG, "config: Finished")
     }

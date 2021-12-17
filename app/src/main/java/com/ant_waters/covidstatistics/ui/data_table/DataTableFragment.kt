@@ -32,6 +32,7 @@ import android.widget.LinearLayout
 import com.ant_waters.covidstatistics.Utils.HorizontalScrollViewListener
 import com.ant_waters.covidstatistics.Utils.ObservableHorizontalScrollView
 import com.ant_waters.covidstatistics.Utils.SimpleTable
+import com.ant_waters.covidstatistics.Utils.SimpleTable2
 
 // The starting point for this code came from: https://stackoverflow.com/questions/7119231/android-layout-how-to-implement-a-fixed-freezed-header-and-column
 // and other sources:
@@ -103,9 +104,9 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
         return root
     }
 
-    fun getTestData(numCols:Int, numRows:Int) : SimpleTable
+    fun getTestData(numCols:Int, numRows:Int) : SimpleTable2<String, String>
     {
-        val table = SimpleTable()
+        val table = SimpleTable2<String, String>()
         val longHdrCol = 2
         val longDataCol = 1
         val numLongRows = 4
@@ -124,13 +125,19 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
         for (r in 0..numRows-1)
         {
             values.clear()
+            var rowHdr = ""
             for (c in 0..numCols-1)
             {
                 var datVal: String = (if ((r < numLongRows) && (c == longDataCol)) "Longer Val${r},${c+1}" else "Val${r},${c+1}")
                 if  (r==warning_row) { datVal = "War${r},${c+1}" }
-                values.add(datVal);
+
+                if (c == 0){
+                    rowHdr = datVal
+                } else {
+                    values.add(datVal);
+                }
             }
-            table.addRow(values.toList())
+            table.addRow(rowHdr, values.toList())
         }
         return table
     }
@@ -141,7 +148,7 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
         return displayTable(inflater, testData)
     }
 
-    fun displayTable(inflater: LayoutInflater, dataTable: SimpleTable): Array<Array<View?>>
+    fun displayTable(inflater: LayoutInflater, dataTable: SimpleTable2<String, String>): Array<Array<View?>>
     {
         var allCells = Array(dataTable.NumRows+1) {Array<View?>(dataTable.NumColumns) {null} }
 
@@ -183,7 +190,7 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
         for (r in 0..dataTable.NumRows-1) {
 
             // ----------- Create RowHeader
-            val rowHdrText = (if (r == -1) dataTable.Headers[0] else dataTable.Rows[r][0])
+            val rowHdrText = (if (r == -1) dataTable.Headers[0] else dataTable.Rows[r].first)
             allCells[r+1][0] = createHeaderCellFromTemplate(inflater, rowHdrText)
             setHeaderBg(allCells[r+1][0] as View)
             row = TableRow(_context)
@@ -193,7 +200,7 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
             // ----------- Create Row Data
             row = TableRow(_context)
             for (c in 1..dataTable.NumColumns-1) {
-                val dataVal = (if (r == -1) dataTable.Headers[c] else dataTable.Rows[r][c])
+                val dataVal = (if (r == -1) dataTable.Headers[c] else dataTable.Rows[r].second[c-1])
                 allCells[r+1][c] = createDataCellFromTemplate(inflater, dataVal)
                 setContentBg(allCells[r+1][c] as View)
                 row.addView(allCells[r+1][c])

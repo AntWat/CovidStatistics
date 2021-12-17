@@ -24,6 +24,29 @@ class SimpleTable() {
     }
 }
 
+class SimpleTable2<TRowHdr, Tval>() {
+    val NumRows
+        get() = Rows.count()
+
+    val NumColumns
+        get() = Headers.count()
+
+    var Headers = mutableListOf<String>()
+    var Rows = mutableListOf<Pair<TRowHdr, List<Tval/*Value*/>>>()
+
+    fun addHeaders(items: List<String>)
+    {
+        Headers.addAll(items)
+    }
+    fun addRow(rowHdr:TRowHdr, items: List<Tval>)
+    {
+        if (items.count() != Headers.count()-1) { throw Exception("Bad row in csv file") }
+        Rows.add(Pair<TRowHdr, List<Tval>>(rowHdr, items))
+    }
+}
+
+
+
 /*
 class SimpleTable<T>() {
     public var NumRows: Int = 0

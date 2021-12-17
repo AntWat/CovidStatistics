@@ -3,6 +3,8 @@ package com.ant_waters.covidstatistics.model
 import android.content.Context
 import android.util.Log
 import com.ant_waters.covidstatistics.MainActivity
+import com.ant_waters.covidstatistics.Utils.SimpleTable
+import com.ant_waters.covidstatistics.Utils.SimpleTable2
 import java.util.*
 import com.ant_waters.covidstatistics.Utils.readCsv
 import com.ant_waters.covidstatistics.database.country_data
@@ -27,6 +29,12 @@ class DataManager {
 
         val PopulationScaler = 100000      // cases are usually reported per 100k of population
         val PopulationScalerLabel = "100k"
+
+        private var _dailyCasesTable = SimpleTable2<Date, Int>()
+        val DailyCasesTable get() = this._dailyCasesTable
+
+        private var _dailyDeathsTable = SimpleTable2<Date, Int>()
+        val DailyDeathsTable get() = this._dailyDeathsTable
     }
 
 
@@ -69,6 +77,13 @@ class DataManager {
 
             val dailyCovidsByDate = mutableMapOf<Date, MutableList<DailyCovid>>()
 
+            val columnMap = mutableMapOf<Country, Int>()
+            val rowMap = mutableMapOf<Date, Int>()
+            var headers = mutableListOf<String>()       // Includes blank row header
+            headers.add("")
+            var casesRows = mutableListOf<Pair<Date, MutableList<Int/*Value*/>>>()
+            var deathsRows = mutableListOf<Pair<Date, MutableList<Int/*Value*/>>>()
+
             var dateStart: Date? = null
             var dateEnd: Date? = null
 
@@ -76,25 +91,64 @@ class DataManager {
             {
                 if (mapCountriesByGeoId.containsKey(dbcd.geoId))
                 {
-                    val c: Country = mapCountriesByGeoId[dbcd.geoId]!!
-
                     val d = SimpleDateFormat("yyyy-MM-dd").parse(dbcd.dateRep)
+                    if (!rowMap.containsKey(d))
+                    {
+                        casesRows.add(Pair<Date, MutableList<Int>>(d, mutableListOf<Int>()))
+                        deathsRows.add(Pair<Date, MutableList<Int>>(d, mutableListOf<Int>()))
+
+                        val newRowIndex:Int = casesRows.size-1
+                        rowMap.put(d, newRowIndex)
+
+                        for (c in 1..headers.size-1) {
+                            casesRows[newRowIndex].second.add(0)
+                            deathsRows[newRowIndex].second.add(0)
+                        }
+                    }
+
                     if ( (dateStart == null) || (d < dateStart) ) { dateStart = d }
                     if ( (dateEnd == null) || (d > dateEnd) ) { dateEnd = d }
 
                     if (!dailyCovidsByDate.containsKey(d)) {
                         dailyCovidsByDate.put(d, mutableListOf<DailyCovid>())
                     }
+
+                    // --------------------
+                    val c: Country = mapCountriesByGeoId[dbcd.geoId]!!
+
+                    if (!columnMap.containsKey(c))
+                    {
+                        for (r in casesRows) { r.second.add(0) }
+                        for (r in deathsRows) { r.second.add(0) }
+
+                        headers.add(c.name)
+                        columnMap.put(c, headers.size-2)
+                    }
+
+                    // --------------------
                     val cases:Int = dbcd.cases?:0
                     val deaths:Int = dbcd.deaths?:0
 
                     dailyCovidsByDate[d]!!.add(DailyCovid(c, d, cases, deaths))
+
+                    casesRows[rowMap[d]!!].second[columnMap[c]!!] = cases
+                    deathsRows[rowMap[d]!!].second[columnMap[c]!!] = deaths
                 }
             }
 
             DateStart = dateStart!!
             DateEnd = dateEnd!!
             _dailyCovidsByDate  = dailyCovidsByDate.toList()
+
+            _dailyCasesTable.addHeaders(headers)
+            for (p in casesRows) {
+                _dailyCasesTable.addRow(p.first, p.second)
+            }
+
+            _dailyDeathsTable.addHeaders(headers)
+            for (p in deathsRows) {
+                _dailyDeathsTable.addRow(p.first, p.second)
+            }
 
             //val countries = LoadCountries_HardCoded()
 

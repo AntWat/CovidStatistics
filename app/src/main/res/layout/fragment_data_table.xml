@@ -1,22 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.data_table.DataTableFragment">
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_horizontal"
+    android:id="@+id/main_area"
+    android:layout_marginTop="0in"
+    android:layout_marginBottom="0in"
+    android:layout_marginLeft="0in"
+    android:layout_marginRight="0in"
+    android:background="@android:color/holo_green_dark">
 
-    <TextView
-        android:id="@+id/text_data_table"
-        android:layout_width="match_parent"
+    <LinearLayout android:orientation="horizontal"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:gravity="center_horizontal"
+        android:id="@+id/header_area"
+        >
+
+        <!-- Top left cell, in a table of its own-->
+        <TableLayout
+            android:id="@+id/top_left_cell"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:paddingLeft="0in"
+            android:paddingRight="0in"
+            android:paddingTop="0in"
+            android:paddingBottom="0in"
+            />
+
+        <!-- Column header horizontal scroll-->
+        <com.ant_waters.covidstatistics.Utils.ObservableHorizontalScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/column_header_scroll"
+            >
+
+            <!-- Column Headers-->
+            <TableLayout
+                android:id="@+id/table_header"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                >
+            </TableLayout>
+        </com.ant_waters.covidstatistics.Utils.ObservableHorizontalScrollView>
+    </LinearLayout>
+
+    <!-- Data area vertical scroll-->
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        >
+        <LinearLayout android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center_horizontal"
+            android:id="@+id/fillable_area"
+            >
+
+            <!-- Data row headers-->
+            <TableLayout
+                android:id="@+id/fixed_column"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                app:layout_constraintStart_toStartOf="@+id/table_header"
+                android:paddingLeft="0in"
+                android:paddingRight="0in"
+                android:paddingTop="0in"
+                android:paddingBottom="0in"
+                />
+
+            <!-- Data rows horizontal scroll-->
+            <com.ant_waters.covidstatistics.Utils.ObservableHorizontalScrollView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/data_horizontal_scroll"
+                >
+
+                <!-- Data rows-->
+                <TableLayout
+                    android:id="@+id/scrollable_part"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:paddingLeft="0in"
+                    android:paddingRight="0in"
+                    android:paddingTop="0in"
+                    android:paddingBottom="0in"
+                    />
+            </com.ant_waters.covidstatistics.Utils.ObservableHorizontalScrollView>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+    <!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+    <!--    xmlns:tools="http://schemas.android.com/tools"-->
+    <!--    android:layout_width="match_parent"-->
+    <!--    android:layout_height="match_parent"-->
+    <!--    tools:context=".ui.data_table.DataTableFragment">-->
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/text_data_table"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="8dp"-->
+    <!--        android:layout_marginTop="8dp"-->
+    <!--        android:layout_marginEnd="8dp"-->
+    <!--        android:textAlignment="center"-->
+    <!--        android:textSize="20sp"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent" />-->
+    <!--</androidx.constraintlayout.widget.ConstraintLayout>-->
+

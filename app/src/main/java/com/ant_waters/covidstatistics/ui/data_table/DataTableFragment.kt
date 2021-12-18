@@ -31,7 +31,6 @@ import com.ant_waters.covidstatistics.MainActivity
 import com.ant_waters.covidstatistics.Utils.HorizontalScrollViewListener
 import com.ant_waters.covidstatistics.Utils.ObservableHorizontalScrollView
 import com.ant_waters.covidstatistics.Utils.SimpleTable2
-import com.ant_waters.covidstatistics.model.Country
 import com.ant_waters.covidstatistics.model.DataManager
 import java.text.SimpleDateFormat
 import java.util.*
@@ -84,7 +83,7 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
         horizontalScrollView2!!.setScrollViewListener(this);
 
         // Display the table
-        val allCells = displayTestTable(inflater)
+        val allCells = displayDataTable(inflater)
 
         val content: View = _binding!!.mainArea
         content.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
@@ -144,7 +143,7 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
         return table
     }
 
-    fun displayTestTable(inflater: LayoutInflater): Array<Array<View?>>
+    fun displayDataTable(inflater: LayoutInflater): Array<Array<View?>>
     {
 //        val testData = getTestData(20, 100)
 //        return displayTable<String>(inflater, testData)
@@ -153,22 +152,23 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
 
         val numCountriesToInclude = 10      // Top ten!
         val includeColumns = mutableListOf<String>()
-        for (p in 0..10) {
-            includeColumns.add(ranking[p].first.name)
+        for (p in 1..numCountriesToInclude) {
+            includeColumns.add(ranking[p-1].first.name)
         }
 
         return displayTable<Date, Int>(inflater, DataManager.DailyCasesTable, includeColumns)
     }
 
-    // includeColumns does not need to include the row header
-    fun <TRowHdr, Tval>displayTable(inflater: LayoutInflater, dataTable: SimpleTable2<TRowHdr, Tval>, includeColumns:List<String>): Array<Array<View?>>
+    // includeColumns should not include the row header
+    fun <TRowHdr, Tval>displayTable(inflater: LayoutInflater, dataTable: SimpleTable2<TRowHdr, Tval>,
+                                    includeColumns:List<String>): Array<Array<View?>>
     {
         val maxDataRows = 100
 
         Log.i(MainActivity.LOG_TAG, "displayTable: Starting")
 
         val numRows = (if (dataTable.NumRows <= maxDataRows) { dataTable.NumRows+1} else {maxDataRows+1})
-        var allCells = Array(numRows) {Array<View?>(dataTable.NumColumns) {null} }
+        var allCells = Array(numRows) {Array<View?>(includeColumns.size+1) {null} }
 
         val wrapWrapTableRowParams: TableRow.LayoutParams =
             LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
@@ -190,12 +190,23 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
         row.setLayoutParams(wrapWrapTableRowParams)
         row.setGravity(Gravity.CENTER)
 
-        for (c in 1..dataTable.NumColumns-1) {
-            val colHdrText = dataTable.Headers[c]
-            allCells[0][c] = createHeaderCellFromTemplate(inflater, colHdrText)
-            setHeaderBg(allCells[0][c] as View)
-            row.addView(allCells[0][c])
+        var cIndex=0
+        val columnMap = mutableMapOf<Int/*Index in display*/,Int/*Index in table*/>()
+
+        for (sc in 0..includeColumns.size-1)
+        {
+            for (c in 1..dataTable.NumColumns-1) {
+                val colHdrText = dataTable.Headers[c]
+                if (includeColumns[sc] == colHdrText) {
+                    cIndex = sc+1
+                    columnMap.put(cIndex,c)
+                    allCells[0][cIndex] = createHeaderCellFromTemplate(inflater, colHdrText)
+                    setHeaderBg(allCells[0][cIndex] as View)
+                    row.addView(allCells[0][cIndex])
+                }
+            }
         }
+
         header.addView(row)
 
         // ------------- Row header (fixed horizontally)
@@ -217,10 +228,12 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
 
             // ----------- Create Row Data
             row = TableRow(_context)
-            for (c in 1..dataTable.NumColumns-1) {
-                allCells[r+1][c] = createDataCellFromTemplate<Tval>(inflater, dataTable.Rows[r].second[c-1])
-                setContentBg(allCells[r+1][c] as View)
-                row.addView(allCells[r+1][c])
+            for (sc in 0..columnMap.size-1) {
+                cIndex = sc+1
+                val c = columnMap[cIndex]
+                allCells[r+1][cIndex] = createDataCellFromTemplate<Tval>(inflater, dataTable.Rows[r].second[c!!-1])
+                setContentBg(allCells[r+1][cIndex] as View)
+                row.addView(allCells[r+1][cIndex])
             }
 
             row.setLayoutParams(wrapWrapTableRowParams)

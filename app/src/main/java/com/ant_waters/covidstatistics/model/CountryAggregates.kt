@@ -11,19 +11,39 @@ class CountryAggregates {
 
     val SortedByProportionalCases: List<Pair<Country, CountryAggregate>>
         get() {
-            return Aggregates.sortedByDescending { it.second.proportionalCases }
+            return Aggregates.sortedWith (
+                compareByDescending {
+                    (if (it.first.popData2019 > DataManager.MinPopulationForRanking)
+                        it.second.proportionalCases else 0.0)
+                }
+            )
         }
     val SortedByProportionalDeaths: List<Pair<Country, CountryAggregate>>
         get() {
-            return Aggregates.sortedByDescending { it.second.proportionalDeaths }
+            return Aggregates.sortedWith (
+                compareByDescending {
+                    (if (it.first.popData2019 > DataManager.MinPopulationForRanking)
+                        it.second.proportionalDeaths else 0.0)
+                }
+            )
         }
     val SortedByTotalCases: List<Pair<Country, CountryAggregate>>
         get() {
-            return Aggregates.sortedByDescending { it.second.totalCovidCases }
+            return Aggregates.sortedWith (
+                compareByDescending {
+                    (if (it.first.popData2019 > DataManager.MinPopulationForRanking)
+                        it.second.totalCovidCases.toDouble() else 0.0)
+                }
+            )
         }
     val SortedByTotalDeaths: List<Pair<Country, CountryAggregate>>
         get() {
-            return Aggregates.sortedByDescending { it.second.totalCovidDeaths }
+            return Aggregates.sortedWith (
+                compareByDescending {
+                    (if (it.first.popData2019 > DataManager.MinPopulationForRanking)
+                        it.second.totalCovidDeaths.toDouble() else 0.0)
+                }
+            )
         }
 
     fun SetData(dateStart: Date, dateEnd: Date,

@@ -39,6 +39,8 @@ class DataManager {
 
         private var _dailyDeathsTable = SimpleTable2<Date, Int>()
         val DailyDeathsTable get() = this._dailyDeathsTable
+
+        val MinPopulationForRanking = 1000000
     }
 
 

@@ -19,16 +19,19 @@ import com.ant_waters.covidstatistics.databinding.ActivityMainBinding
 import com.ant_waters.covidstatistics.model.DataManager
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlin.system.measureTimeMillis
+
+enum class enDataLoaded { None, CountriesOnly, All};
 
 class MainActivity : AppCompatActivity() {
     companion object {
         val LOG_TAG = "CovidStatistics_MainAct"
         var MainPackageName = ""
 
-        val _dataInitialised = MutableLiveData<Boolean>().apply {
-            value = false
+        val _dataInitialised = MutableLiveData<enDataLoaded>().apply {
+            value = enDataLoaded.None
         }
-        val DataInitialised: LiveData<Boolean> = _dataInitialised
+        val DataInitialised: LiveData<enDataLoaded> = _dataInitialised
     }
 
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -39,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        _dataInitialised.setValue(false)
+        _dataInitialised.setValue(enDataLoaded.None)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -74,9 +77,12 @@ class MainActivity : AppCompatActivity() {
 
         val context: Context = this
         GlobalScope.launch {
-            _dataManager.LoadData(context)
-            Log.i(LOG_TAG, "LoadData: Finished")
-            _dataInitialised.postValue(true)
+            val elapsedTime= measureTimeMillis {
+                _dataManager.LoadData(context,
+                    fun(state:enDataLoaded) { _dataInitialised.postValue(state)})
+            }
+            Log.i(LOG_TAG, "LoadData: Finished in ${elapsedTime} millisecs")
+            //_dataInitialised.postValue(enDataLoaded.All)
         }
 
         Log.i(LOG_TAG, "config: Finished")

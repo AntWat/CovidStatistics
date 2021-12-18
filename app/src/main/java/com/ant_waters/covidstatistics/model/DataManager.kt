@@ -15,12 +15,16 @@ import kotlinx.coroutines.withContext
 import java.io.InputStream
 import java.text.SimpleDateFormat
 import kotlin.math.ceil
+import com.ant_waters.covidstatistics.enDataLoaded
 
 
 class DataManager {
     companion object {
         lateinit var DateStart: Date
         lateinit var DateEnd: Date
+
+        private var _countries = mutableListOf<Country>()
+        val Countries get() = this._countries
 
         private var _dailyCovidsByDate = listOf<Pair<Date, MutableList<DailyCovid>>>()
         val DailyCovidsByDate get() = this._dailyCovidsByDate
@@ -46,16 +50,16 @@ class DataManager {
 
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-    suspend fun LoadData(context: Context): Boolean {
+    suspend fun LoadData(context: Context, onDataLoaded:(enDataLoaded)->Unit): Boolean {
         return withContext(Dispatchers.IO)
-        {LoadDataFromDatabase(context)}
+        {LoadDataFromDatabase(context, onDataLoaded)}
         //return LoadDataFromCsv(context)
     }
 
 
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-    private fun LoadDataFromDatabase(context: Context): Boolean {
+    private fun LoadDataFromDatabase(context: Context, onDataLoaded:(enDataLoaded)->Unit): Boolean {
         Log.i(MainActivity.LOG_TAG, "LoadDataFromDatabase: Started")
 
         try {
@@ -73,9 +77,12 @@ class DataManager {
                 val cdata: country_data? = covidDatabase.country_dataDao().findByGeoId(dbc.geoId)
 
                 val c = Country(dbc, cdata?.population_2019?:0)
+                _countries.add(c)
                 mapCountriesByName.put(dbc.name!!, c)
                 mapCountriesByGeoId.put(dbc.geoId!!, c)
             }
+
+            onDataLoaded(enDataLoaded.CountriesOnly)
 
             // ---------------------------
             Log.i(MainActivity.LOG_TAG, "Loading daily data")
@@ -177,11 +184,14 @@ class DataManager {
 
             // ---------------------------
             Log.i(MainActivity.LOG_TAG, "LoadDataFromDatabase: Finished")
+            onDataLoaded(enDataLoaded.All)
             return true
         } catch (ex: Exception) {
             Log.i(MainActivity.LOG_TAG, "Error: ${ex.message}")
             // TODO: Errorhandling?
             return false
+        }
+        finally {
         }
     }
 

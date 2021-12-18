@@ -3,25 +3,25 @@ package com.ant_waters.covidstatistics.adapters
 import android.content.Context
 import android.content.res.Resources
 import android.icu.number.NumberFormatter
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ant_waters.covidstatistics.R
-import com.ant_waters.covidstatistics.model.DailyCovid
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.ant_waters.covidstatistics.MainActivity
-import com.ant_waters.covidstatistics.model.CountryAggregate
-import com.ant_waters.covidstatistics.model.CountryAggregates
-import com.ant_waters.covidstatistics.model.DataManager
+import com.ant_waters.covidstatistics.enDataLoaded
+import com.ant_waters.covidstatistics.model.*
 import java.text.DecimalFormat
 
 import java.util.*
 
 class DailyDataItemAdapter(private val context: Fragment,
+                           private val countries: List<Country>,
                            private val countryAggregates : CountryAggregates?
 )
     : RecyclerView.Adapter<DailyDataItemAdapter.ItemViewHolder>(){
@@ -34,6 +34,8 @@ class DailyDataItemAdapter(private val context: Fragment,
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
+        Log.i(MainActivity.LOG_TAG, "DailyDataItemAdapter.onCreateViewHolder: Started")
+
         // create a new view
         val adapterLayout = LayoutInflater.from(parent.context)
             .inflate(R.layout.daily_data_item, parent, false)
@@ -42,8 +44,29 @@ class DailyDataItemAdapter(private val context: Fragment,
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        //if (dailyCovidsByDate == null) return
+        if (MainActivity.DataInitialised.value == enDataLoaded.CountriesOnly)
+            DisplayCountry(holder, position)
+        else  if (MainActivity.DataInitialised.value==enDataLoaded.All)
+            DisplayCountryAndData(holder, position)
+    }
 
+    fun DisplayCountry(holder: ItemViewHolder, position: Int) {
+        if (countries == null) { return }
+
+        val c = countries[position]
+        holder.countryView.text = c.name
+
+        holder.casesView.text = "Population: ${c.popData2019}"
+        holder.deathsView.text = " "
+
+        val res: Resources = context.resources
+        val resourceId: Int = res.getIdentifier(c.geoId.lowercase(),
+            "drawable", MainActivity.MainPackageName)
+
+        holder.flagView.setImageResource(resourceId)
+    }
+
+    fun DisplayCountryAndData(holder: ItemViewHolder, position: Int) {
         if (countryAggregates == null) { return }
 
         val kvp = countryAggregates.Aggregates[position]
@@ -72,7 +95,13 @@ class DailyDataItemAdapter(private val context: Fragment,
         return "${prefix}${df.format((stat))} per ${DataManager.PopulationScalerLabel}"
     }
 
-    override fun getItemCount() = countryAggregates?.Aggregates?.count()?:0
-
+    override fun getItemCount() =
+        (if (MainActivity.DataInitialised.value==enDataLoaded.CountriesOnly)
+            countries.size
+        else
+            if (MainActivity.DataInitialised.value==enDataLoaded.All)
+                countryAggregates?.Aggregates?.count()?:0
+            else
+                0)
 
 }

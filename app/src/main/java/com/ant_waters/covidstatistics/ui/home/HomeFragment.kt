@@ -14,6 +14,7 @@ import com.ant_waters.covidstatistics.MainActivity
 import com.ant_waters.covidstatistics.R
 import com.ant_waters.covidstatistics.adapters.DailyDataItemAdapter
 import com.ant_waters.covidstatistics.databinding.FragmentHomeBinding
+import com.ant_waters.covidstatistics.enDataLoaded
 import com.ant_waters.covidstatistics.model.DataManager
 
 class HomeFragment : Fragment() {
@@ -30,24 +31,40 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.i(MainActivity.LOG_TAG, "HomeFragment.onCreateView: Started")
+
         homeViewModel =
             ViewModelProvider(this).get(HomeViewModel::class.java)
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        binding.recyclerView.setVisibility(View.GONE)
+        binding.progressBar1.setVisibility(View.VISIBLE)
+
         //val textView: TextView = binding.textHome
         val recyclerView = binding.recyclerView
-        recyclerView.adapter = DailyDataItemAdapter(this, DataManager.CountryAggregates)
+        recyclerView.adapter = DailyDataItemAdapter(
+            this, DataManager.Countries, DataManager.CountryAggregates)
 
         // Use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         recyclerView.setHasFixedSize(true)
 
         MainActivity.DataInitialised.observe(viewLifecycleOwner, Observer {
-            Log.i(MainActivity.LOG_TAG, "Observer: Started")
-            binding.recyclerView.adapter?.notifyItemRangeInserted(0,
-                DataManager.CountryAggregates?.Aggregates?.size?:0)
+            if (it == enDataLoaded.CountriesOnly) {
+                Log.i(MainActivity.LOG_TAG, "Observer: Started for countries")
+                binding.recyclerView.setVisibility(View.VISIBLE)
+
+                binding.recyclerView.adapter?.notifyItemRangeInserted(0,
+                    DataManager.CountryAggregates?.Aggregates?.size?:0)
+            } else if (it == enDataLoaded.All) {
+                Log.i(MainActivity.LOG_TAG, "Observer: Started for all data")
+                binding.recyclerView.setVisibility(View.VISIBLE)
+                binding.progressBar1.setVisibility(View.GONE)
+                binding.recyclerView.adapter?.notifyItemRangeChanged(0,
+                    DataManager.CountryAggregates?.Aggregates?.size?:0)
+            }
         })
 
 //        homeViewModel.text.observe(viewLifecycleOwner, Observer {

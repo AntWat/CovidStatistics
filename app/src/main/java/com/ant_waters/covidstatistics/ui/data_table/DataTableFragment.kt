@@ -31,6 +31,7 @@ import com.ant_waters.covidstatistics.MainActivity
 import com.ant_waters.covidstatistics.Utils.HorizontalScrollViewListener
 import com.ant_waters.covidstatistics.Utils.ObservableHorizontalScrollView
 import com.ant_waters.covidstatistics.Utils.SimpleTable2
+import com.ant_waters.covidstatistics.enDataLoaded
 import com.ant_waters.covidstatistics.model.DataManager
 import java.text.SimpleDateFormat
 import java.util.*
@@ -83,24 +84,26 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
         horizontalScrollView2!!.setScrollViewListener(this);
 
         // Display the table
-        val allCells = displayDataTable(inflater)
+        if (MainActivity.DataInitialised.value==enDataLoaded.All) {
+            val allCells = displayDataTable(inflater)
 
-        val content: View = _binding!!.mainArea
-        content.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                //Remove the observer so we don't get this callback for EVERY layout pass
-                content.viewTreeObserver.removeGlobalOnLayoutListener(this)
+            val content: View = _binding!!.mainArea
+            content.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    //Remove the observer so we don't get this callback for EVERY layout pass
+                    content.viewTreeObserver.removeGlobalOnLayoutListener(this)
 
-                //Resize the columns to match the maximum width
-                setColumnWidths(allCells, fun (v: View, w: Int) {
-                    val tv = v.findViewById<View>(com.ant_waters.covidstatistics.R.id.cell_text_view) as TextView
-                    var lp  = LayoutParams(w, LayoutParams.WRAP_CONTENT)
-                    v.layoutParams = lp
+                    //Resize the columns to match the maximum width
+                    setColumnWidths(allCells, fun (v: View, w: Int) {
+                        val tv = v.findViewById<View>(com.ant_waters.covidstatistics.R.id.cell_text_view) as TextView
+                        var lp  = LayoutParams(w, LayoutParams.WRAP_CONTENT)
+                        v.layoutParams = lp
 
-                    tv.setGravity(Gravity.CENTER)
-                })
-            }
-        })
+                        tv.setGravity(Gravity.CENTER)
+                    })
+                }
+            })
+        }
 
         return root
     }
@@ -156,12 +159,13 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
             includeColumns.add(ranking[p-1].first.name)
         }
 
-        return displayTable<Date, Int>(inflater, DataManager.DailyCasesTable, includeColumns)
+        return displayTable<Date, Int>(inflater, DataManager.DailyCasesTable,
+            includeColumns, "End Date")
     }
 
     // includeColumns should not include the row header
     fun <TRowHdr, Tval>displayTable(inflater: LayoutInflater, dataTable: SimpleTable2<TRowHdr, Tval>,
-                                    includeColumns:List<String>): Array<Array<View?>>
+                                    includeColumns:List<String>, topLeftText:String): Array<Array<View?>>
     {
         val maxDataRows = 100
 
@@ -178,7 +182,7 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
         val topLeftTL = _binding?.topLeftCell as TableLayout
         row.setLayoutParams(wrapWrapTableRowParams)
         row.setGravity(Gravity.CENTER)
-        val topLeftText = dataTable.Headers[0]
+        //val topLeftText = dataTable.Headers[0]
         allCells[0][0] = createHeaderCellFromTemplate(inflater, topLeftText)
         setHeaderBg(allCells[0][0] as View)
         row.addView(allCells[0][0])
@@ -294,6 +298,7 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
     fun <Tval>createDataCellFromTemplate(inflater: LayoutInflater, theVal: Tval): View {
         var templateId = com.ant_waters.covidstatistics.R.layout.data_cell
         val text = theVal.toString()
+        // TODO: NOW!!
         if (text?.startsWith("War")!!) { templateId = com.ant_waters.covidstatistics.R.layout.warning_data_cell }
         val cellView: View = inflater.inflate(templateId, null)
 

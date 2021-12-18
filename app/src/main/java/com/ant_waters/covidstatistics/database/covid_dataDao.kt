@@ -8,7 +8,7 @@ import com.ant_waters.covidstatistics.database.covid_data
 
 @Dao
 interface covid_dataDao {
-    @Query("SELECT * FROM covid_data")
+    @Query("SELECT * FROM covid_data ORDER BY dateRep DESC")
     fun getAll(): List<covid_data>
 
     @Query("SELECT * FROM covid_data WHERE id IN (:ids)")

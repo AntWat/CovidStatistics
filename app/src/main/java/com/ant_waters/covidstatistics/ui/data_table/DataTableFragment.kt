@@ -6,7 +6,6 @@ package com.ant_waters.covidstatistics.ui.data_table
 //import android.view.ViewGroup
 //import android.widget.TextView
 //import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.ant_waters.covidstatistics.databinding.FragmentDataTableBinding
 
@@ -20,19 +19,22 @@ import android.view.Gravity
 
 import android.widget.TextView;
 import android.content.Context
-import android.graphics.Color
 
 import android.widget.TableLayout
 import android.widget.TableRow
 
 import android.widget.TableRow.LayoutParams;
-import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.LinearLayout
+import com.ant_waters.covidstatistics.MainActivity
 import com.ant_waters.covidstatistics.Utils.HorizontalScrollViewListener
 import com.ant_waters.covidstatistics.Utils.ObservableHorizontalScrollView
-import com.ant_waters.covidstatistics.Utils.SimpleTable
 import com.ant_waters.covidstatistics.Utils.SimpleTable2
+import com.ant_waters.covidstatistics.model.Country
+import com.ant_waters.covidstatistics.model.DataManager
+import java.text.SimpleDateFormat
+import java.util.*
 
 // The starting point for this code came from: https://stackoverflow.com/questions/7119231/android-layout-how-to-implement-a-fixed-freezed-header-and-column
 // and other sources:
@@ -144,13 +146,29 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
 
     fun displayTestTable(inflater: LayoutInflater): Array<Array<View?>>
     {
-        val testData = getTestData(20, 100)
-        return displayTable(inflater, testData)
+//        val testData = getTestData(20, 100)
+//        return displayTable<String>(inflater, testData)
+
+        val ranking = DataManager.CountryAggregates.SortedByProportionalCases
+
+        val numCountriesToInclude = 10      // Top ten!
+        val includeColumns = mutableListOf<String>()
+        for (p in 0..10) {
+            includeColumns.add(ranking[p].first.name)
+        }
+
+        return displayTable<Date, Int>(inflater, DataManager.DailyCasesTable, includeColumns)
     }
 
-    fun displayTable(inflater: LayoutInflater, dataTable: SimpleTable2<String, String>): Array<Array<View?>>
+    // includeColumns does not need to include the row header
+    fun <TRowHdr, Tval>displayTable(inflater: LayoutInflater, dataTable: SimpleTable2<TRowHdr, Tval>, includeColumns:List<String>): Array<Array<View?>>
     {
-        var allCells = Array(dataTable.NumRows+1) {Array<View?>(dataTable.NumColumns) {null} }
+        val maxDataRows = 100
+
+        Log.i(MainActivity.LOG_TAG, "displayTable: Starting")
+
+        val numRows = (if (dataTable.NumRows <= maxDataRows) { dataTable.NumRows+1} else {maxDataRows+1})
+        var allCells = Array(numRows) {Array<View?>(dataTable.NumColumns) {null} }
 
         val wrapWrapTableRowParams: TableRow.LayoutParams =
             LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
@@ -188,10 +206,10 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
 
         // ------------- Create the rows
         for (r in 0..dataTable.NumRows-1) {
+            if  (r>maxDataRows-1){ break}
+            Log.i(MainActivity.LOG_TAG, "displayTable: Row ${r}")
 
-            // ----------- Create RowHeader
-            val rowHdrText = (if (r == -1) dataTable.Headers[0] else dataTable.Rows[r].first)
-            allCells[r+1][0] = createHeaderCellFromTemplate(inflater, rowHdrText)
+            allCells[r+1][0] = createRowHeaderCellFromTemplate<TRowHdr>(inflater, dataTable.Rows[r].first)
             setHeaderBg(allCells[r+1][0] as View)
             row = TableRow(_context)
             row.addView(allCells[r+1][0])
@@ -200,8 +218,7 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
             // ----------- Create Row Data
             row = TableRow(_context)
             for (c in 1..dataTable.NumColumns-1) {
-                val dataVal = (if (r == -1) dataTable.Headers[c] else dataTable.Rows[r].second[c-1])
-                allCells[r+1][c] = createDataCellFromTemplate(inflater, dataVal)
+                allCells[r+1][c] = createDataCellFromTemplate<Tval>(inflater, dataTable.Rows[r].second[c-1])
                 setContentBg(allCells[r+1][c] as View)
                 row.addView(allCells[r+1][c])
             }
@@ -211,6 +228,7 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
             scrollablePart.addView(row)
         }
 
+        Log.i(MainActivity.LOG_TAG, "displayTable: Finished")
         return  allCells
     }
 
@@ -243,9 +261,26 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
 
         return cellView
     }
+    fun <TRowHdr>createRowHeaderCellFromTemplate(inflater: LayoutInflater, rowHdr: TRowHdr): View {
+        val cellView: View = inflater.inflate(com.ant_waters.covidstatistics.R.layout.header_cell, null)
+        val tv = cellView.findViewById<View>(com.ant_waters.covidstatistics.R.id.cell_text_view) as TextView
 
-    fun createDataCellFromTemplate(inflater: LayoutInflater, text: String?): View {
+        if  (rowHdr is Date)
+        {
+            val dt = rowHdr as Date
+            var formatter = SimpleDateFormat("dd/MM/yy")
+            tv.text = formatter.format(dt)
+        }
+        else {
+            tv.text = rowHdr.toString()
+        }
+
+        return cellView
+    }
+
+    fun <Tval>createDataCellFromTemplate(inflater: LayoutInflater, theVal: Tval): View {
         var templateId = com.ant_waters.covidstatistics.R.layout.data_cell
+        val text = theVal.toString()
         if (text?.startsWith("War")!!) { templateId = com.ant_waters.covidstatistics.R.layout.warning_data_cell }
         val cellView: View = inflater.inflate(templateId, null)
 

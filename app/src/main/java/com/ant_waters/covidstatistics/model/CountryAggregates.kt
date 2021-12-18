@@ -1,5 +1,6 @@
 package com.ant_waters.covidstatistics.model
 
+import com.ant_waters.covidstatistics.database.country
 import java.util.*
 
 class CountryAggregates {
@@ -7,6 +8,23 @@ class CountryAggregates {
     lateinit var DateEnd: Date
 
     var Aggregates = mutableListOf<Pair<Country, CountryAggregate>>()
+
+    val SortedByProportionalCases: List<Pair<Country, CountryAggregate>>
+        get() {
+            return Aggregates.sortedByDescending { it.second.proportionalCases }
+        }
+    val SortedByProportionalDeaths: List<Pair<Country, CountryAggregate>>
+        get() {
+            return Aggregates.sortedByDescending { it.second.proportionalDeaths }
+        }
+    val SortedByTotalCases: List<Pair<Country, CountryAggregate>>
+        get() {
+            return Aggregates.sortedByDescending { it.second.totalCovidCases }
+        }
+    val SortedByTotalDeaths: List<Pair<Country, CountryAggregate>>
+        get() {
+            return Aggregates.sortedByDescending { it.second.totalCovidDeaths }
+        }
 
     fun SetData(dateStart: Date, dateEnd: Date,
                 dailyCovidsByDate: List<Pair<Date, MutableList<DailyCovid>>>) {

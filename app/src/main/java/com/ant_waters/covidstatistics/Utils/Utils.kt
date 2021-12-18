@@ -2,6 +2,7 @@ package com.ant_waters.covidstatistics.Utils
 
 import java.io.File
 import java.io.InputStream
+import java.util.*
 
 class SimpleTable() {
     val NumRows
@@ -46,30 +47,14 @@ class SimpleTable2<TRowHdr, Tval>() {
 }
 
 
+// -----------------------------------
 
-/*
-class SimpleTable<T>() {
-    public var NumRows: Int = 0
-    public var NumColumns: Int = 0
-    public var Headers = mutableListOf<String>()
-    public var rows = mutableListOf<Map</*Header*/String, T/*Value*/>>()
-
-    fun readFirstRowAndHeaders(firstRowAsMap: Map</*Header*/String, T/*Value*/>): Unit {
-        if ((NumColumns != 0) || (Headers.count() != 0)) {
-            throw Exception("Bad call to readFirstRowAndHeaders")}
-
-        NumColumns = firstRowAsMap.size
-        for (kvp in firstRowAsMap) {Headers.add(kvp.key)}
-        addRowFromMap(firstRowAsMap)
-    }
-
-    fun addRowFromMap(rowAsMap: Map</*Header*/String, T/*Value*/>) : Unit
-    {
-        rows.add(rowAsMap)
-    }
+fun DaysDiff(dEnd: Date, dStart:Date):Long {
+    val dayInMilliSecs:Long = 24*60*60*1000
+    val diffInMillies: Long = Math.abs(dEnd.getTime() - dStart!!.getTime())
+    val diffInDays = diffInMillies/dayInMilliSecs
+    return diffInDays
 }
-*/
-
 
 // -----------------------------------
 

@@ -3,6 +3,7 @@ package com.ant_waters.covidstatistics.model
 import android.content.Context
 import android.util.Log
 import com.ant_waters.covidstatistics.MainActivity
+import com.ant_waters.covidstatistics.Utils.DaysDiff
 import com.ant_waters.covidstatistics.Utils.SimpleTable
 import com.ant_waters.covidstatistics.Utils.SimpleTable2
 import java.util.*
@@ -29,6 +30,9 @@ class DataManager {
 
         val PopulationScaler = 100000      // cases are usually reported per 100k of population
         val PopulationScalerLabel = "100k"
+
+        val AggregationPeriodInDays = 10     // cases are grouped into periods to reduce number of data points
+        val AggregationPeriodLabel = "10 days"
 
         private var _dailyCasesTable = SimpleTable2<Date, Int>()
         val DailyCasesTable get() = this._dailyCasesTable
@@ -87,22 +91,32 @@ class DataManager {
             var dateStart: Date? = null
             var dateEnd: Date? = null
 
+            var aggregatedDate: Date? = null
+
             for (dbcd in dbCovid_data)
             {
                 if (mapCountriesByGeoId.containsKey(dbcd.geoId))
                 {
                     val d = SimpleDateFormat("yyyy-MM-dd").parse(dbcd.dateRep)
-                    if (!rowMap.containsKey(d))
-                    {
-                        casesRows.add(Pair<Date, MutableList<Int>>(d, mutableListOf<Int>()))
-                        deathsRows.add(Pair<Date, MutableList<Int>>(d, mutableListOf<Int>()))
 
-                        val newRowIndex:Int = casesRows.size-1
-                        rowMap.put(d, newRowIndex)
+                    var diffInDays:Long = AggregationPeriodInDays.toLong()+1
+                    if (aggregatedDate != null) {
+                        diffInDays = DaysDiff(d, aggregatedDate)
+                    }
 
-                        for (c in 1..headers.size-1) {
-                            casesRows[newRowIndex].second.add(0)
-                            deathsRows[newRowIndex].second.add(0)
+                    if (diffInDays>=AggregationPeriodInDays) {
+                        aggregatedDate = d
+                        if (!rowMap.containsKey(d)) {
+                            casesRows.add(Pair<Date, MutableList<Int>>(d, mutableListOf<Int>()))
+                            deathsRows.add(Pair<Date, MutableList<Int>>(d, mutableListOf<Int>()))
+
+                            val newRowIndex: Int = casesRows.size - 1
+                            rowMap.put(d, newRowIndex)
+
+                            for (c in 1..headers.size - 1) {
+                                casesRows[newRowIndex].second.add(0)
+                                deathsRows[newRowIndex].second.add(0)
+                            }
                         }
                     }
 
@@ -131,8 +145,8 @@ class DataManager {
 
                     dailyCovidsByDate[d]!!.add(DailyCovid(c, d, cases, deaths))
 
-                    casesRows[rowMap[d]!!].second[columnMap[c]!!] = cases
-                    deathsRows[rowMap[d]!!].second[columnMap[c]!!] = deaths
+                    casesRows[rowMap[aggregatedDate]!!].second[columnMap[c]!!] += cases
+                    deathsRows[rowMap[aggregatedDate]!!].second[columnMap[c]!!] += deaths
                 }
             }
 

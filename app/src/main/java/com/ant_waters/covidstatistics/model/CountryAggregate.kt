@@ -13,21 +13,16 @@ class CountryAggregate(
 
     val proportionalCases: Double
         get() {
-            //Log.i("CountryAggregate", "totalCovidCases:${totalCovidCases.toString()}")
             val dval: Double =
                 totalCovidCases.toDouble() * DataManager.PopulationScaler.toDouble() / country.popData2019
-//            Log.i("CountryAggregate", "dval:${dval.toString()}")
             return dval
         }
 
 
     val proportionalDeaths: Double
         get() {
-            //Log.i("CountryAggregate", "totalCovidDeaths:${totalCovidDeaths.toString()}")
             val dval: Double =
                 totalCovidDeaths.toDouble() * DataManager.PopulationScaler.toDouble() / country.popData2019
-//            Log.i("CountryAggregate", "dval:${dval.toString()}")
             return dval
         }
-
 }

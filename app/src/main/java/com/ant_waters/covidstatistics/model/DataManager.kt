@@ -198,8 +198,6 @@ class DataManager {
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     private fun LoadDataFromCsv(context: Context): Boolean {
-        // TODO: Load data from CSV or Database
-
         try {
             val countries = LoadCountries_HardCoded()
 

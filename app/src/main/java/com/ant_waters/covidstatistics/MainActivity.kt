@@ -21,6 +21,15 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlin.system.measureTimeMillis
 
+/* TODO Items
+* ) Add warning icon to data table
+* ) Add options for country list and data table, 4 statistics
+* ) Add popup to display country data:
+*   - name, flag, Continent, Population, 4 statistics for 2020
+* ) Tidy up, santise, release as Kotlin demo, announce online.
+* */
+
+
 enum class enDataLoaded { None, CountriesOnly, All};
 
 class MainActivity : AppCompatActivity() {

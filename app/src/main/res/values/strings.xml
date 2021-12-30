@@ -12,6 +12,8 @@
     <string name="menu_slideshow">Slideshow</string>
 
     <string name="data_table_label">10 day sets, worst 10 countries</string>
-<!--    TODO: This should dynamically pick up the values for AggregationPeriodInDays and numCountriesToInclude-->
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!--    TODO: This should dynamically pick up the values for AggregationPeriodInDays and numCountriesToInclude-->
 
 </resources>

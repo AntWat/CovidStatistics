@@ -1,24 +1,31 @@
 package com.ant_waters.covidstatistics.adapters
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
 import android.icu.number.NumberFormatter
 import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.ant_waters.covidstatistics.R
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import com.ant_waters.covidstatistics.MainActivity
-import com.ant_waters.covidstatistics.enDataLoaded
 import com.ant_waters.covidstatistics.model.*
 import java.text.DecimalFormat
 
 import java.util.*
+import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
+import com.ant_waters.covidstatistics.*
+import com.ant_waters.covidstatistics.ui.CountryPopupDialogFragment
+import android.os.Bundle
+
+
+
+
 
 class DailyDataItemAdapter(private val context: Fragment,
                            private val countries: List<Country>,
@@ -48,6 +55,34 @@ class DailyDataItemAdapter(private val context: Fragment,
             DisplayCountry(holder, position)
         else  if (MainActivity.DataInitialised.value==enDataLoaded.All)
             DisplayCountryAndData(holder, position)
+
+        holder.itemView.setOnClickListener(View.OnClickListener {
+//            Toast.makeText(
+//                context.context,
+//                "clicked on $position",
+//                Toast.LENGTH_SHORT
+//            ).show()
+
+//            val intent = Intent(holder.itemView.context, CountryPopup::class.java)
+//            intent.putExtra("popuptitle", "Error")
+//            intent.putExtra("popuptext", "Sorry, that email address is already used!")
+//            intent.putExtra("popupbtn", "OK")
+//            intent.putExtra("darkstatusbar", false)
+//            holder.itemView.context.startActivity(intent)
+
+//            val cpdf = CountryPopupDialogFragment()
+//            cpdf.show(context.childFragmentManager, "missiles")
+
+            val cpf = CountryPopupFragment()
+
+            // Supply country as an argument.
+            val args = Bundle()
+            val c = countries[position]
+            args.putString("geoId", c.geoId)
+            cpf.setArguments(args)
+
+            cpf.show(context.childFragmentManager, "countrypopup")
+        })
     }
 
     fun DisplayCountry(holder: ItemViewHolder, position: Int) {

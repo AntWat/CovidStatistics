@@ -1,4 +1,4 @@
-package com.ant_waters.covidstatistics.Utils
+package com.ant_waters.covidstatistics.ui
 
 import android.content.Context
 import android.util.AttributeSet

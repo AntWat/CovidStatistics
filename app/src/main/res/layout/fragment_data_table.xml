@@ -33,7 +33,7 @@
             />
 
         <!-- Column header horizontal scroll-->
-        <com.ant_waters.covidstatistics.Utils.ObservableHorizontalScrollView
+        <com.ant_waters.covidstatistics.ui.ObservableHorizontalScrollView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/column_header_scroll"
@@ -46,7 +46,7 @@
                 android:layout_height="wrap_content"
                 >
             </TableLayout>
-        </com.ant_waters.covidstatistics.Utils.ObservableHorizontalScrollView>
+        </com.ant_waters.covidstatistics.ui.ObservableHorizontalScrollView>
     </LinearLayout>
 
     <!-- Data area vertical scroll-->
@@ -74,7 +74,7 @@
                 />
 
             <!-- Data rows horizontal scroll-->
-            <com.ant_waters.covidstatistics.Utils.ObservableHorizontalScrollView
+            <com.ant_waters.covidstatistics.ui.ObservableHorizontalScrollView
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:id="@+id/data_horizontal_scroll"
@@ -90,7 +90,7 @@
                     android:paddingTop="0in"
                     android:paddingBottom="0in"
                     />
-            </com.ant_waters.covidstatistics.Utils.ObservableHorizontalScrollView>
+            </com.ant_waters.covidstatistics.ui.ObservableHorizontalScrollView>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

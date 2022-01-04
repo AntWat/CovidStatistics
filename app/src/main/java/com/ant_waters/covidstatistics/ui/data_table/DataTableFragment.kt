@@ -22,8 +22,8 @@ import android.util.Log
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.LinearLayout
 import com.ant_waters.covidstatistics.MainActivity
-import com.ant_waters.covidstatistics.Utils.HorizontalScrollViewListener
-import com.ant_waters.covidstatistics.Utils.ObservableHorizontalScrollView
+import com.ant_waters.covidstatistics.ui.HorizontalScrollViewListener
+import com.ant_waters.covidstatistics.ui.ObservableHorizontalScrollView
 import com.ant_waters.covidstatistics.Utils.SimpleTable2
 import com.ant_waters.covidstatistics.enDataLoaded
 import com.ant_waters.covidstatistics.model.DataManager

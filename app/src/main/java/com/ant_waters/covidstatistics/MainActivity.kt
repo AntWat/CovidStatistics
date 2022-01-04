@@ -23,11 +23,13 @@ import kotlin.system.measureTimeMillis
 
 /* TODO Items
 * ) Add warning icon to data table
-* ) Add options for country list and data table, 4 statistics
-* ) Add popup to display country data:
-*   - name, flag, Continent, Population, 4 statistics for 2020
-* ) Tidy up, santise, release as Kotlin demo, announce online.
+* ) Add options for country list and data table, 4 statistics, filters etc.
 * ) Database CRUD
+* ) Tidy up, sanitise, release as Kotlin demo, announce online.
+*) Search TODO items
+*
+*         * ) Add popup to display country data:
+        *   - name, flag, Continent, Population, 4 statistics for 2020
 * */
 
 

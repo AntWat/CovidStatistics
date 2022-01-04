@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CovidStatistics">
         <activity
-            android:name=".CountryPopup"
+            android:name=".ui.country_pop_up.CountryPopup"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

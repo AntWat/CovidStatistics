@@ -27,6 +27,7 @@ import kotlin.system.measureTimeMillis
 * ) Add popup to display country data:
 *   - name, flag, Continent, Population, 4 statistics for 2020
 * ) Tidy up, santise, release as Kotlin demo, announce online.
+* ) Database CRUD
 * */
 
 

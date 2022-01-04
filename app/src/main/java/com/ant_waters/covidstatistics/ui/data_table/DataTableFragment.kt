@@ -159,7 +159,7 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
             includeColumns.add(ranking[p-1].first.name)
         }
 
-        return displayTable<Date, Int>(inflater, DataManager.DailyCasesTable,
+        return displayTable<Date, Int>(inflater, DataManager.CovidCasesTable,
             includeColumns, "End Date")
     }
 

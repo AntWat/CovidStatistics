@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--This defines the items for the recycler view (in "fragment_home.xml") that displays country totals on the Home page -->
+
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,11 +12,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <!--<LinearLayout-->
-        <!--    android:layout_width="match_parent"-->
-        <!--    android:layout_height="wrap_content"-->
-        <!--    android:orientation="vertical">-->
 
         <TextView
             android:id="@+id/item_country"

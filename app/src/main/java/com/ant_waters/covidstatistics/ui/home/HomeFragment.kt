@@ -5,14 +5,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
 import com.ant_waters.covidstatistics.MainActivity
-import com.ant_waters.covidstatistics.R
-import com.ant_waters.covidstatistics.adapters.DailyDataItemAdapter
+import com.ant_waters.covidstatistics.adapters.HomeItemAdapter
 import com.ant_waters.covidstatistics.databinding.FragmentHomeBinding
 import com.ant_waters.covidstatistics.enDataLoaded
 import com.ant_waters.covidstatistics.model.DataManager
@@ -44,7 +41,7 @@ class HomeFragment : Fragment() {
 
         //val textView: TextView = binding.textHome
         val recyclerView = binding.recyclerView
-        recyclerView.adapter = DailyDataItemAdapter(
+        recyclerView.adapter = HomeItemAdapter(
             this, DataManager.Countries, DataManager.CountryAggregates)
 
         // Use this setting to improve performance if you know that changes

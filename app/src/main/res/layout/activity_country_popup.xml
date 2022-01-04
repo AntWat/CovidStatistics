@@ -15,7 +15,7 @@
     android:id="@+id/country_popup_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CountryPopup">
+    tools:context=".ui.country_pop_up.CountryPopup">
 
 
     <androidx.cardview.widget.CardView

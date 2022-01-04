@@ -1,9 +1,6 @@
 package com.ant_waters.covidstatistics.adapters
 
-import android.content.Context
-import android.content.Intent
 import android.content.res.Resources
-import android.icu.number.NumberFormatter
 import android.util.Log
 import android.view.View
 import android.widget.TextView
@@ -16,22 +13,15 @@ import androidx.fragment.app.Fragment
 import com.ant_waters.covidstatistics.model.*
 import java.text.DecimalFormat
 
-import java.util.*
-import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import com.ant_waters.covidstatistics.*
-import com.ant_waters.covidstatistics.ui.CountryPopupDialogFragment
 import android.os.Bundle
+import com.ant_waters.covidstatistics.ui.country_pop_up.CountryPopupFragment
 
-
-
-
-
-class DailyDataItemAdapter(private val context: Fragment,
-                           private val countries: List<Country>,
-                           private val countryAggregates : CountryAggregates?
+class HomeItemAdapter(private val context: Fragment,
+                      private val countries: List<Country2>,
+                      private val countryAggregates : CountryAggregates?
 )
-    : RecyclerView.Adapter<DailyDataItemAdapter.ItemViewHolder>(){
+    : RecyclerView.Adapter<HomeItemAdapter.ItemViewHolder>(){
 
     class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val countryView: TextView = view.findViewById(R.id.item_country)
@@ -41,11 +31,11 @@ class DailyDataItemAdapter(private val context: Fragment,
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        Log.i(MainActivity.LOG_TAG, "DailyDataItemAdapter.onCreateViewHolder: Started")
+        Log.i(MainActivity.LOG_TAG, "HomeDataItemAdapter.onCreateViewHolder: Started")
 
         // create a new view
         val adapterLayout = LayoutInflater.from(parent.context)
-            .inflate(R.layout.daily_data_item, parent, false)
+            .inflate(R.layout.home_item, parent, false)
 
         return ItemViewHolder(adapterLayout)
     }
@@ -57,22 +47,6 @@ class DailyDataItemAdapter(private val context: Fragment,
             DisplayCountryAndData(holder, position)
 
         holder.itemView.setOnClickListener(View.OnClickListener {
-//            Toast.makeText(
-//                context.context,
-//                "clicked on $position",
-//                Toast.LENGTH_SHORT
-//            ).show()
-
-//            val intent = Intent(holder.itemView.context, CountryPopup::class.java)
-//            intent.putExtra("popuptitle", "Error")
-//            intent.putExtra("popuptext", "Sorry, that email address is already used!")
-//            intent.putExtra("popupbtn", "OK")
-//            intent.putExtra("darkstatusbar", false)
-//            holder.itemView.context.startActivity(intent)
-
-//            val cpdf = CountryPopupDialogFragment()
-//            cpdf.show(context.childFragmentManager, "missiles")
-
             val cpf = CountryPopupFragment()
 
             // Supply country as an argument.

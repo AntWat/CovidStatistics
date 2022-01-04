@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.Query
 import com.ant_waters.covidstatistics.database.country_data
 
-// TODO: Rename all these classes to use Camel Case if possible
 @Dao
 interface country_dataDao {
     @Query("SELECT * FROM country_data")

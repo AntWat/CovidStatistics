@@ -1,19 +1,17 @@
-package com.ant_waters.covidstatistics
+package com.ant_waters.covidstatistics.ui.country_pop_up
 
 import android.app.Dialog
-import android.content.DialogInterface
 import android.content.res.Resources
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import com.ant_waters.covidstatistics.model.Country
-import com.ant_waters.covidstatistics.model.CountryAggregate
+import com.ant_waters.covidstatistics.MainActivity
+import com.ant_waters.covidstatistics.R
 import com.ant_waters.covidstatistics.model.DataManager
 import java.text.DecimalFormat
 

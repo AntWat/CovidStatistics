@@ -1,13 +1,12 @@
 package com.ant_waters.covidstatistics.model
 
-import android.util.Log
 import java.util.*
 
 //import kotlin.math.
 
 // Aggregated statistics for a country over a date range
 class CountryAggregate(
-    val country: Country, val dateStart: Date, val dateEnd: Date,
+    val country: Country2, val dateStart: Date, val dateEnd: Date,
     val totalCovidCases: Int = 5, val totalCovidDeaths: Int = 5
 ) {
 

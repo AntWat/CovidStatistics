@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import com.ant_waters.covidstatistics.MainActivity
 import com.ant_waters.covidstatistics.Utils.DaysDiff
-import com.ant_waters.covidstatistics.Utils.SimpleTable
 import com.ant_waters.covidstatistics.Utils.SimpleTable2
 import java.util.*
 import com.ant_waters.covidstatistics.Utils.readCsv
@@ -17,13 +16,13 @@ import java.text.SimpleDateFormat
 import kotlin.math.ceil
 import com.ant_waters.covidstatistics.enDataLoaded
 
-
+// The main class for reading from the database and storing references to the data classes
 class DataManager {
     companion object {
         lateinit var DateStart: Date
         lateinit var DateEnd: Date
 
-        private var _countries = mutableListOf<Country>()
+        private var _countries = mutableListOf<Country2>()
         val Countries get() = this._countries
 
         private var _dailyCovidsByDate = listOf<Pair<Date, MutableList<DailyCovid>>>()
@@ -38,11 +37,11 @@ class DataManager {
         val AggregationPeriodInDays = 10     // cases are grouped into periods to reduce number of data points
         val AggregationPeriodLabel = "10 days"
 
-        private var _dailyCasesTable = SimpleTable2<Date, Int>()
-        val DailyCasesTable get() = this._dailyCasesTable
+        private var _covidCasesTable = SimpleTable2<Date, Int>()
+        val CovidCasesTable get() = this._covidCasesTable
 
-        private var _dailyDeathsTable = SimpleTable2<Date, Int>()
-        val DailyDeathsTable get() = this._dailyDeathsTable
+        private var _covidDeathsTable = SimpleTable2<Date, Int>()
+        val CovidDeathsTable get() = this._covidDeathsTable
 
         val MinPopulationForRanking = 1000000
     }
@@ -69,14 +68,14 @@ class DataManager {
             Log.i(MainActivity.LOG_TAG, "Loading countries")
             val dbCountries = covidDatabase.countryDao().getAll()
 
-            val mapCountriesByName = mutableMapOf</*name*/String, Country>()
-            val mapCountriesByGeoId = mutableMapOf</*geoId*/String, Country>()
+            val mapCountriesByName = mutableMapOf</*name*/String, Country2>()
+            val mapCountriesByGeoId = mutableMapOf</*geoId*/String, Country2>()
 
             for (dbc in dbCountries)
             {
                 val cdata: country_data? = covidDatabase.country_dataDao().findByGeoId(dbc.geoId)
 
-                val c = Country(dbc, cdata?.population_2019?:0)
+                val c = Country2(dbc, cdata?.population_2019?:0)
                 _countries.add(c)
                 mapCountriesByName.put(dbc.name!!, c)
                 mapCountriesByGeoId.put(dbc.geoId!!, c)
@@ -90,7 +89,7 @@ class DataManager {
 
             val dailyCovidsByDate = mutableMapOf<Date, MutableList<DailyCovid>>()
 
-            val columnMap = mutableMapOf<Country, Int>()
+            val columnMap = mutableMapOf<Country2, Int>()
             val rowMap = mutableMapOf<Date, Int>()
             var headers = mutableListOf<String>()       // Includes blank row header
             headers.add("")
@@ -137,7 +136,7 @@ class DataManager {
                     }
 
                     // --------------------
-                    val c: Country = mapCountriesByGeoId[dbcd.geoId]!!
+                    val c: Country2 = mapCountriesByGeoId[dbcd.geoId]!!
 
                     if (!columnMap.containsKey(c))
                     {
@@ -163,20 +162,15 @@ class DataManager {
             DateEnd = dateEnd!!
             _dailyCovidsByDate  = dailyCovidsByDate.toList()
 
-            _dailyCasesTable.addHeaders(headers)
+            _covidCasesTable.addHeaders(headers)
             for (p in casesRows) {
-                _dailyCasesTable.addRow(p.first, p.second)
+                _covidCasesTable.addRow(p.first, p.second)
             }
 
-            _dailyDeathsTable.addHeaders(headers)
+            _covidDeathsTable.addHeaders(headers)
             for (p in deathsRows) {
-                _dailyDeathsTable.addRow(p.first, p.second)
+                _covidDeathsTable.addRow(p.first, p.second)
             }
-
-            //val countries = LoadCountries_HardCoded()
-
-            //_dailyCovidsByDate = LoadCasesFromCsvButMakeUpDeaths(context, mapCountries).toList()
-            //_dailyCovidsByDate = LoadTestData(countries).toList()
 
             // ---------------------------
             Log.i(MainActivity.LOG_TAG, "Creating aggregates")
@@ -195,6 +189,9 @@ class DataManager {
         }
     }
 
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    // Test data, no longer used
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     private fun LoadDataFromCsv(context: Context): Boolean {
@@ -202,7 +199,6 @@ class DataManager {
             val countries = LoadCountries_HardCoded()
 
             _dailyCovidsByDate = LoadCasesFromCsvButMakeUpDeaths(context, countries).toList()
-            //_dailyCovidsByDate = LoadTestData(countries).toList()
 
             _countryAggregates.SetData(DateStart, DateEnd, _dailyCovidsByDate)
             return true
@@ -214,7 +210,7 @@ class DataManager {
 
 
     // Real cases numbers are read from a csv file but deaths are made up in the method below
-    private fun LoadCasesFromCsvButMakeUpDeaths(context: Context, countries: MutableMap</*name*/String, Country>)
+    private fun LoadCasesFromCsvButMakeUpDeaths(context: Context, countries: MutableMap</*name*/String, Country2>)
                                             : MutableMap<Date, MutableList<DailyCovid>> {
         try {
             val inputStream: InputStream = context.assets.open("ECPDC_CovidData1.csv")
@@ -234,7 +230,7 @@ class DataManager {
                 val daylies = mutableListOf<DailyCovid>()
 
                 for (i:Int in 1..row.count()-1) {
-                    val c: Country? = countries[csv.Headers[i]]
+                    val c: Country2? = countries[csv.Headers[i]]
                     if (c == null)
                     {
                         Log.e(MainActivity.LOG_TAG,"Header is not a recognised country: '${csv.Headers[i]}'")

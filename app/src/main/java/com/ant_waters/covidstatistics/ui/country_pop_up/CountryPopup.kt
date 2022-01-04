@@ -1,4 +1,4 @@
-package com.ant_waters.covidstatistics
+package com.ant_waters.covidstatistics.ui.country_pop_up
 
 
 import android.animation.Animator
@@ -18,7 +18,7 @@ import androidx.core.graphics.ColorUtils
 import com.ant_waters.covidstatistics.databinding.ActivityCountryPopupBinding
 import com.ant_waters.covidstatistics.databinding.ActivityMainBinding
 
-
+// Code for the popup view that appears when you touch a country on the home page
 class CountryPopup : AppCompatActivity() {
     private var popupTitle = ""
     private var popupText = ""

@@ -1,11 +1,5 @@
 package com.ant_waters.covidstatistics.ui.data_table
 
-//import android.os.Bundle
-//import android.view.LayoutInflater
-//import android.view.View
-//import android.view.ViewGroup
-//import android.widget.TextView
-//import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.ant_waters.covidstatistics.databinding.FragmentDataTableBinding
 
@@ -41,6 +35,7 @@ import java.util.*
 
 // See also: https://stackoverflow.com/questions/3948934/synchronise-scrollview-scroll-positions-android
 
+// Code for the fragment that displays a data table
 class DataTableFragment : Fragment(), HorizontalScrollViewListener {
 
     private var _context: Context? = null

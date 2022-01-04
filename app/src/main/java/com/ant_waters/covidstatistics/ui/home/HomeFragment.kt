@@ -14,6 +14,7 @@ import com.ant_waters.covidstatistics.databinding.FragmentHomeBinding
 import com.ant_waters.covidstatistics.enDataLoaded
 import com.ant_waters.covidstatistics.model.DataManager
 
+// Code for the fragment for the home page
 class HomeFragment : Fragment() {
 
     private lateinit var homeViewModel: HomeViewModel
@@ -39,7 +40,6 @@ class HomeFragment : Fragment() {
         binding.recyclerView.setVisibility(View.GONE)
         binding.progressBar1.setVisibility(View.VISIBLE)
 
-        //val textView: TextView = binding.textHome
         val recyclerView = binding.recyclerView
         recyclerView.adapter = HomeItemAdapter(
             this, DataManager.Countries, DataManager.CountryAggregates)
@@ -64,9 +64,6 @@ class HomeFragment : Fragment() {
             }
         })
 
-//        homeViewModel.text.observe(viewLifecycleOwner, Observer {
-//            textView.text = it
-//        })
         return root
     }
 

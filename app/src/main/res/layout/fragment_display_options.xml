@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal|center_vertical"
+    >
+
+    <TextView
+        android:id="@+id/title"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="4dp"
+        android:text="Display Options"
+        android:textSize="20sp" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="200dp"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
+        <GridLayout
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:useDefaultMargins="true"
+            >
+
+            <TextView
+                android:text="Statistics:"
+                android:textSize="16sp"
+                android:layout_column="0"
+                android:layout_row="0"
+                android:layout_gravity="right|center"
+                />
+            <RadioButton
+                android:id="@+id/but1"
+                android:layout_column="1"
+                android:layout_row="0"
+                android:text="Per 100 k"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0dp"
+                />
+            <RadioButton
+                android:id="@+id/but2"
+                android:layout_column="1"
+                android:layout_row="1"
+                android:text="Absolute numbers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                />
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_column="0"
+            android:layout_row="2"
+            android:layout_columnSpan="2"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="1dp"
+            android:layout_width="200dp"
+            android:background="?android:attr/listDivider" />
+
+        <TextView
+            android:text="Sort by:"
+            android:textSize="16sp"
+            android:layout_column="0"
+            android:layout_row="2"
+            android:layout_gravity="right|center"
+            />
+        <Spinner
+            android:id="@+id/sortby_list"
+            android:layout_column="1"
+            android:layout_row="2"
+            android:hint="...sort by"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+<!--        <TextView-->
+<!--            android:text="Sort Ascending:"-->
+<!--            android:textSize="16sp"-->
+<!--            android:layout_column="0"-->
+<!--            android:layout_row="2"-->
+<!--            android:layout_gravity="right|center"-->
+<!--            />-->
+
+            <TextView
+            android:text="Date start:"
+            android:textSize="16sp"
+            android:layout_column="0"
+            android:layout_row="3"
+            android:layout_gravity="right|center"
+            />
+        <EditText
+            android:id="@+id/date_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_row="3"
+            android:layout_column="1"
+            android:ems="10"
+            android:inputType="date"
+            android:hint="01/Jan/2020"
+            android:layout_gravity="left|center"
+            />
+
+        <TextView
+            android:text="Date end:"
+            android:textSize="16sp"
+            android:layout_column="0"
+            android:layout_row="4"
+            android:layout_gravity="right|center"
+            />
+        <EditText
+            android:id="@+id/date_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_row="4"
+            android:layout_column="1"
+            android:ems="10"
+            android:inputType="date"
+            android:hint="31/Dec/2020"
+            android:layout_gravity="left|center"
+            />
+
+        <TextView
+            android:text="Number of rows:"
+            android:textSize="16sp"
+            android:layout_column="0"
+            android:layout_row="5"
+            android:layout_gravity="right|center"
+            />
+
+        <EditText
+            android:id="@+id/editTextNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_row="5"
+            android:layout_column="1"
+            android:ems="10"
+            android:hint="10"
+            android:inputType="number"
+            android:layout_gravity="left|center"
+            />
+
+<!--        <Button-->
+<!--            android:id="@+id/reset"-->
+<!--            android:text="Reset"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_row="6"-->
+<!--            android:layout_column="1"-->
+<!--            />-->
+    </GridLayout>
+
+</LinearLayout>

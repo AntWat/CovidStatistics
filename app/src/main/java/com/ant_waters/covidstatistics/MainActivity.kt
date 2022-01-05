@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -17,6 +18,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ant_waters.covidstatistics.databinding.ActivityMainBinding
 import com.ant_waters.covidstatistics.model.DataManager
+import com.ant_waters.covidstatistics.ui.country_pop_up.CountryPopupFragment
+import com.ant_waters.covidstatistics.ui.display__options.DisplayOptionsFragment
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlin.system.measureTimeMillis
@@ -33,7 +36,7 @@ import kotlin.system.measureTimeMillis
 * */
 
 
-enum class enDataLoaded { None, CountriesOnly, All};
+enum class enDataLoaded { None, CountriesOnly, All}
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -109,5 +112,37 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle item selection
+        return when (item.itemId) {
+            R.id.action_settings -> {
+                //newGame()
+                true
+            }
+            R.id.display_options -> {
+                showDisplayOptions()
+                true
+            }
+            R.id.about -> {
+                //showHelp()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    fun showDisplayOptions()
+    {
+        val dof = DisplayOptionsFragment()
+
+        // Supply country as an argument.
+        val args = Bundle()
+        args.putString("geoId", "BB")
+        dof.setArguments(args)
+
+        dof.show(this.supportFragmentManager, "displayoptions")
+
     }
 }

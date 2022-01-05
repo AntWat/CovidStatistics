@@ -11,6 +11,7 @@
         <entry key="..\:/Users/Antw/Source/Android/CovidStatistics/CovidStatistics/app/src/main/res/layout/data_cell.xml" value="0.30416666666666664" />
         <entry key="..\:/Users/Antw/Source/Android/CovidStatistics/CovidStatistics/app/src/main/res/layout/fragment_country_popup.xml" value="0.18" />
         <entry key="..\:/Users/Antw/Source/Android/CovidStatistics/CovidStatistics/app/src/main/res/layout/fragment_data_table.xml" value="0.14427083333333332" />
+        <entry key="..\:/Users/Antw/Source/Android/CovidStatistics/CovidStatistics/app/src/main/res/layout/fragment_display_options.xml" value="0.33" />
         <entry key="..\:/Users/Antw/Source/Android/CovidStatistics/CovidStatistics/app/src/main/res/layout/fragment_home.xml" value="0.1" />
         <entry key="..\:/Users/Antw/Source/Android/CovidStatistics/CovidStatistics/app/src/main/res/layout/header_cell.xml" value="0.30416666666666664" />
         <entry key="..\:/Users/Antw/Source/Android/CovidStatistics/CovidStatistics/app/src/main/res/layout/home_item.xml" value="0.16354166666666667" />
@@ -18,6 +19,7 @@
         <entry key="..\:/Users/Antw/Source/Android/CovidStatistics/CovidStatistics/app/src/main/res/layout/warning_data_cell.xml" value="0.16354166666666667" />
         <entry key="..\:/Users/Antw/Source/Android/CovidStatistics/CovidStatistics/app/src/main/res/layout/warning_data_table.xml" value="0.2598958333333333" />
         <entry key="..\:/Users/Antw/Source/Android/CovidStatistics/CovidStatistics/app/src/main/res/menu/activity_main_drawer.xml" value="0.30416666666666664" />
+        <entry key="..\:/Users/Antw/Source/Android/CovidStatistics/CovidStatistics/app/src/main/res/menu/main.xml" value="0.22" />
       </map>
     </option>
   </component>

@@ -103,44 +103,6 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
         return root
     }
 
-    fun getTestData(numCols:Int, numRows:Int) : SimpleTable2<String, String>
-    {
-        val table = SimpleTable2<String, String>()
-        val longHdrCol = 2
-        val longDataCol = 1
-        val numLongRows = 4
-        val warning_row = 6
-
-
-        val headers = mutableListOf<String>()
-        for (c in 0..numCols-1)
-        {
-            val hdr: String = (if (c == longHdrCol) "Longer Col${c+1}" else "Col ${c+1}")
-            headers.add(hdr);
-        }
-        table.addHeaders(headers.toList())
-
-        val values = mutableListOf<String>()
-        for (r in 0..numRows-1)
-        {
-            values.clear()
-            var rowHdr = ""
-            for (c in 0..numCols-1)
-            {
-                var datVal: String = (if ((r < numLongRows) && (c == longDataCol)) "Longer Val${r},${c+1}" else "Val${r},${c+1}")
-                if  (r==warning_row) { datVal = "War${r},${c+1}" }
-
-                if (c == 0){
-                    rowHdr = datVal
-                } else {
-                    values.add(datVal);
-                }
-            }
-            table.addRow(rowHdr, values.toList())
-        }
-        return table
-    }
-
     fun displayDataTable(inflater: LayoutInflater): Array<Array<View?>>
     {
 //        val testData = getTestData(20, 100)
@@ -154,12 +116,12 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
             includeColumns.add(ranking[p-1].first.name)
         }
 
-        return displayTable<Date, Int>(inflater, DataManager.CovidCasesTable,
+        return displayTable<Date>(inflater, DataManager.CovidCasesTable,
             includeColumns, "End Date")
     }
 
     // includeColumns should not include the row header
-    fun <TRowHdr, Tval>displayTable(inflater: LayoutInflater, dataTable: SimpleTable2<TRowHdr, Tval>,
+    fun <TRowHdr>displayTable(inflater: LayoutInflater, dataTable: SimpleTable2<TRowHdr, Int>,
                                     includeColumns:List<String>, topLeftText:String): Array<Array<View?>>
     {
         val maxDataRows = 100
@@ -225,12 +187,29 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
             row.addView(allCells[r+1][0])
             fixedColumn.addView(row)
 
+            // ----------- Find the worst column
+            var worstVal = -1
+            var worstCol = -1
+                                // The real code...
+                                //            for (sc in 0..columnMap.size-1) {
+                                //                cIndex = sc+1
+                                //                val c = columnMap[cIndex]
+                                //                val theVal = dataTable.Rows[r].second[c!!-1]
+                                //                if (theVal > worstVal) {
+                                //                    worstVal = theVal
+                                //                    worstCol = sc
+                                //                }
+                                //            }
+            // Choose the worst column randomly, to make the display more interesting
+            worstCol = (0..4).random()
+
             // ----------- Create Row Data
             row = TableRow(_context)
             for (sc in 0..columnMap.size-1) {
                 cIndex = sc+1
                 val c = columnMap[cIndex]
-                allCells[r+1][cIndex] = createDataCellFromTemplate<Tval>(inflater, dataTable.Rows[r].second[c!!-1])
+                allCells[r+1][cIndex] = createDataCellFromTemplate<Int>(inflater,
+                                            dataTable.Rows[r].second[c!!-1], (sc == worstCol))
                 setContentBg(allCells[r+1][cIndex] as View)
                 row.addView(allCells[r+1][cIndex])
             }
@@ -290,11 +269,12 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
         return cellView
     }
 
-    fun <Tval>createDataCellFromTemplate(inflater: LayoutInflater, theVal: Tval): View {
+    fun <Tval>createDataCellFromTemplate(inflater: LayoutInflater, theVal: Tval,
+                                         showWarning: Boolean): View {
         var templateId = com.ant_waters.covidstatistics.R.layout.data_cell
         val text = theVal.toString()
-        // TODO: NOW!!
-        if (text?.startsWith("War")!!) { templateId = com.ant_waters.covidstatistics.R.layout.warning_data_cell }
+
+        if (showWarning) { templateId = com.ant_waters.covidstatistics.R.layout.warning_data_cell }
         val cellView: View = inflater.inflate(templateId, null)
 
         val tv = cellView.findViewById<View>(com.ant_waters.covidstatistics.R.id.cell_text_view) as TextView
@@ -338,4 +318,45 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
             interceptScroll = true
         }
     }
+
+    // ------------------ No longer used
+    fun getTestData(numCols:Int, numRows:Int) : SimpleTable2<String, String>
+    {
+        val table = SimpleTable2<String, String>()
+        val longHdrCol = 2
+        val longDataCol = 1
+        val numLongRows = 4
+        val warning_row = 6
+
+
+        val headers = mutableListOf<String>()
+        for (c in 0..numCols-1)
+        {
+            val hdr: String = (if (c == longHdrCol) "Longer Col${c+1}" else "Col ${c+1}")
+            headers.add(hdr);
+        }
+        table.addHeaders(headers.toList())
+
+        val values = mutableListOf<String>()
+        for (r in 0..numRows-1)
+        {
+            values.clear()
+            var rowHdr = ""
+            for (c in 0..numCols-1)
+            {
+                var datVal: String = (if ((r < numLongRows) && (c == longDataCol)) "Longer Val${r},${c+1}" else "Val${r},${c+1}")
+                if  (r==warning_row) { datVal = "War${r},${c+1}" }
+
+                if (c == 0){
+                    rowHdr = datVal
+                } else {
+                    values.add(datVal);
+                }
+            }
+            table.addRow(rowHdr, values.toList())
+        }
+        return table
+    }
+
+
 }

@@ -7,7 +7,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal|center_vertical"
+    android:theme="@style/Theme.CovidStatistics"
     >
+<!--    android:background="?attr/colorSecondary"-->
 
     <TextView
         android:id="@+id/title"
@@ -42,117 +44,171 @@
                 android:layout_row="0"
                 android:layout_gravity="right|center"
                 />
-            <RadioButton
-                android:id="@+id/but1"
-                android:layout_column="1"
-                android:layout_row="0"
-                android:text="Per 100 k"
-                android:layout_width="wrap_content"
+
+            <RadioGroup
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="0dp"
-                />
-            <RadioButton
-                android:id="@+id/but2"
-                android:layout_column="1"
-                android:layout_row="1"
-                android:text="Absolute numbers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
-                />
+                android:orientation="vertical">
+                <RadioButton
+                    android:id="@+id/but1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_row="0"
+                    android:layout_column="1"
+                    android:layout_marginBottom="0dp"
+                    android:checked="true"
+                    android:text="Per 100 k" />
+                <RadioButton
+                    android:id="@+id/but2"
+                    android:layout_column="1"
+                    android:layout_row="1"
+                    android:text="Totals"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    />
 
-        <View
-            android:id="@+id/divider2"
-            android:layout_column="0"
-            android:layout_row="2"
-            android:layout_columnSpan="2"
-            android:layout_gravity="center_horizontal"
-            android:layout_height="1dp"
-            android:layout_width="200dp"
-            android:background="?android:attr/listDivider" />
+            </RadioGroup>
 
-        <TextView
-            android:text="Sort by:"
-            android:textSize="16sp"
-            android:layout_column="0"
-            android:layout_row="2"
-            android:layout_gravity="right|center"
-            />
-        <Spinner
-            android:id="@+id/sortby_list"
-            android:layout_column="1"
-            android:layout_row="2"
-            android:hint="...sort by"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-<!--        <TextView-->
-<!--            android:text="Sort Ascending:"-->
-<!--            android:textSize="16sp"-->
-<!--            android:layout_column="0"-->
-<!--            android:layout_row="2"-->
-<!--            android:layout_gravity="right|center"-->
-<!--            />-->
+            <View
+                android:layout_column="0"
+                android:layout_row="2"
+                android:layout_columnSpan="2"
+                android:layout_gravity="center_horizontal"
+                android:layout_height="1dp"
+                android:layout_width="200dp"
+                android:background="?android:attr/listDivider" />
 
             <TextView
-            android:text="Date start:"
-            android:textSize="16sp"
-            android:layout_column="0"
-            android:layout_row="3"
-            android:layout_gravity="right|center"
-            />
-        <EditText
-            android:id="@+id/date_start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_row="3"
-            android:layout_column="1"
-            android:ems="10"
-            android:inputType="date"
-            android:hint="01/Jan/2020"
-            android:layout_gravity="left|center"
-            />
+                android:text="Sort by:"
+                android:textSize="16sp"
+                android:layout_column="0"
+                android:layout_row="2"
+                android:layout_gravity="right|center"
+                />
+            <Spinner
+                android:id="@+id/sortby_list"
+                android:layout_column="1"
+                android:layout_row="2"
+                android:hint="...sort by"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
-        <TextView
-            android:text="Date end:"
-            android:textSize="16sp"
-            android:layout_column="0"
-            android:layout_row="4"
-            android:layout_gravity="right|center"
-            />
-        <EditText
-            android:id="@+id/date_end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_row="4"
-            android:layout_column="1"
-            android:ems="10"
-            android:inputType="date"
-            android:hint="31/Dec/2020"
-            android:layout_gravity="left|center"
-            />
+            <TextView
+                android:text="Reverse sort:"
+                android:textSize="16sp"
+                android:layout_column="0"
+                android:layout_row="3"
+                android:layout_gravity="right|center"
+                />
 
-        <TextView
-            android:text="Number of rows:"
-            android:textSize="16sp"
-            android:layout_column="0"
-            android:layout_row="5"
-            android:layout_gravity="right|center"
-            />
+            <Switch
+                android:id="@+id/switch_reverse_sort"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_row="3"
+                android:layout_column="1"
+                android:checked="true"
+                android:text="" />
 
-        <EditText
-            android:id="@+id/editTextNumber"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_row="5"
-            android:layout_column="1"
-            android:ems="10"
-            android:hint="10"
-            android:inputType="number"
-            android:layout_gravity="left|center"
-            />
+            <View
+                android:layout_column="0"
+                android:layout_row="4"
+                android:layout_columnSpan="2"
+                android:layout_gravity="center_horizontal"
+                android:layout_height="1dp"
+                android:layout_width="200dp"
+                android:background="?android:attr/listDivider" />
 
-<!--        <Button-->
+            <TextView
+                android:text="Date start:"
+                android:textSize="16sp"
+                android:layout_column="0"
+                android:layout_row="4"
+                android:layout_gravity="right|center"
+                />
+
+            <Button
+                android:id="@+id/start_date_btn"
+                android:text="01/Jan/2020..."
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_row="4"
+                android:layout_column="1"
+                />
+<!--            android:backgroundTint="@color/purple_200"-->
+<!--            android:backgroundTint="?attr/colorPrimaryVariant"-->
+
+            <!--            <EditText-->
+<!--                android:id="@+id/date_start"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_row="4"-->
+<!--                android:layout_column="1"-->
+<!--                android:layout_gravity="left|center"-->
+<!--                android:ems="10"-->
+<!--                android:hint="01/Jan/2020"-->
+<!--                android:inputType="date" />-->
+
+            <TextView
+                android:text="Date end:"
+                android:textSize="16sp"
+                android:layout_column="0"
+                android:layout_row="5"
+                android:layout_gravity="right|center"
+                />
+            <Button
+                android:id="@+id/end_date_btn"
+                android:text="31/Dec/2020..."
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_row="5"
+                android:layout_column="1"
+                />
+
+            <!--            <EditText-->
+<!--                android:id="@+id/date_end"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_row="5"-->
+<!--                android:layout_column="1"-->
+<!--                android:ems="10"-->
+<!--                android:inputType="date"-->
+<!--                android:hint="31/Dec/2020"-->
+<!--                android:layout_gravity="left|center"-->
+<!--                />-->
+
+            <View
+                android:layout_column="0"
+                android:layout_row="6"
+                android:layout_columnSpan="2"
+                android:layout_gravity="center_horizontal"
+                android:layout_height="1dp"
+                android:layout_width="200dp"
+                android:background="?android:attr/listDivider" />
+
+            <TextView
+                android:text="Number of rows:"
+                android:textSize="16sp"
+                android:layout_column="0"
+                android:layout_row="6"
+                android:layout_gravity="right|center"
+                />
+
+            <EditText
+                android:id="@+id/editTextNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_row="6"
+                android:layout_column="1"
+                android:ems="10"
+                android:hint="10"
+                android:inputType="number"
+                android:layout_gravity="left|center"
+                />
+
+
+            <!--        <Button-->
 <!--            android:id="@+id/reset"-->
 <!--            android:text="Reset"-->
 <!--            android:layout_width="wrap_content"-->

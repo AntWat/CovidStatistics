@@ -6,7 +6,9 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.ImageView
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -60,7 +62,18 @@ class DisplayOptionsFragment : DialogFragment()  {
             val inflater = requireActivity().layoutInflater;
             val vw = inflater.inflate(R.layout.fragment_display_options, null)
 
-            //val imgFlag = vw.findViewById<View>(com.ant_waters.covidstatistics.R.id.flag2) as ImageView
+            // -------------- Add the items to the list (spinner)
+            val spinner = vw.findViewById<Spinner>(R.id.sortby_list)
+            val items = arrayOf("Country Name", "Proportional Deaths", "Proprotional Cases", "Total Deaths", "Total Cases")
+            val adapter = ArrayAdapter<String>(
+                this.requireContext(),
+                android.R.layout.simple_spinner_dropdown_item,
+                items
+            )
+            spinner.setAdapter(adapter)
+
+
+                //val imgFlag = vw.findViewById<View>(com.ant_waters.covidstatistics.R.id.flag2) as ImageView
 //            val txtCountry = vw.findViewById<View>(com.ant_waters.covidstatistics.R.id.countryText) as TextView
 //            val txtContinent = vw.findViewById<View>(com.ant_waters.covidstatistics.R.id.continentText) as TextView
 //            val txtPopulation = vw.findViewById<View>(com.ant_waters.covidstatistics.R.id.populationText) as TextView

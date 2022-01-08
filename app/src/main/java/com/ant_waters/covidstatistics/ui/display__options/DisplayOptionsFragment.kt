@@ -56,6 +56,8 @@ class DisplayOptionsFragment : DialogFragment()  {
 //            }
 //        }
 
+        // MaterialAlertDialogBuilder
+
         return activity?.let {
             val builder = AlertDialog.Builder(it)
             // Get the layout inflater
@@ -104,6 +106,7 @@ class DisplayOptionsFragment : DialogFragment()  {
                 .setPositiveButton("Ok",
                     DialogInterface.OnClickListener { dialog, id ->
                         // TODO: Use the new choices
+                        MainActivity.UpdateDisplayOptionsChanged()
                         getDialog()?.dismiss()
                     })
                 .setNegativeButton("Cancel",

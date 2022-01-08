@@ -188,7 +188,7 @@
                 android:background="?android:attr/listDivider" />
 
             <TextView
-                android:text="Number of rows:"
+                android:text="Max table rows:"
                 android:textSize="16sp"
                 android:layout_column="0"
                 android:layout_row="6"
@@ -201,8 +201,8 @@
                 android:layout_height="wrap_content"
                 android:layout_row="6"
                 android:layout_column="1"
-                android:ems="10"
-                android:hint="10"
+                android:ems="3"
+                android:hint="100"
                 android:inputType="number"
                 android:layout_gravity="left|center"
                 />

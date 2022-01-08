@@ -24,6 +24,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlin.system.measureTimeMillis
 
+import java.text.SimpleDateFormat
+
 /* TODO Items
 * ) Add options for country list and data table, 4 statistics, filters etc.
 * ) Database CRUD
@@ -47,6 +49,18 @@ class MainActivity : AppCompatActivity() {
             value = enDataLoaded.None
         }
         val DataInitialised: LiveData<enDataLoaded> = _dataInitialised
+
+
+        // This live data flag uses date time so it can be updated to a new value at any time.
+        val _displayOptionsChanged = MutableLiveData<SimpleDateFormat>().apply {
+            value = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+        }
+        val DisplayOptionsChanged: LiveData<SimpleDateFormat> = _displayOptionsChanged
+
+        public fun UpdateDisplayOptionsChanged()
+        {
+            _displayOptionsChanged.value = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+        }
     }
 
     private lateinit var appBarConfiguration: AppBarConfiguration

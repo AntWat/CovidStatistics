@@ -2,305 +2,267 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:gravity="center"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal|center_vertical"
-    android:theme="@style/Theme.CovidStatistics"
-    >
-<!--    android:background="?attr/colorSecondary"-->
+    android:gravity="center"
+    android:orientation="vertical"
+    android:theme="@style/Theme.CovidStatistics">
+    <!--    android:background="?attr/colorSecondary"-->
 
     <ScrollView
-        android:scrollbars="vertical"
-        android:scrollIndicators="right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/teal_200"
         android:fadeScrollbars="false"
-        >
+        android:scrollbars="vertical">
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:theme="@style/Theme.CovidStatistics"
             >
-    <GridLayout
-        android:layout_gravity="center_horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:columnCount="2"
-        android:useDefaultMargins="true"
-        android:layout_marginTop="30dp"
-        >
 
-<!--        <View-->
-<!--            android:layout_column="0"-->
-<!--            android:layout_row="0"-->
-<!--            android:layout_columnSpan="2"-->
-<!--            android:layout_gravity="center_horizontal"-->
-<!--            android:layout_height="1dp"-->
-<!--            android:layout_width="200dp"-->
-<!--            android:background="?android:attr/listDivider" />-->
 
-        <TextView
-            android:text="Date start:"
-            android:textSize="16sp"
-            android:layout_column="0"
-            android:layout_row="0"
-            android:layout_gravity="right|center"
-            />
+            <!-- +++++++++++  Options that apply to both home view list and the data table -->
+            <GridLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="30dp"
+                android:columnCount="2"
+                android:useDefaultMargins="true">
 
-        <Button
-            android:id="@+id/start_date_btn"
-            android:text="01/Jan/2020..."
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_row="0"
-            android:layout_column="1"
-            />
-        <!--            android:backgroundTint="@color/purple_200"-->
-        <!--            android:backgroundTint="?attr/colorPrimaryVariant"-->
+                <!-- Example of a line that spans multiple columns-->
+                <!--    <View-->
+                <!--        android:layout_column="0"-->
+                <!--        android:layout_row="0"-->
+                <!--        android:layout_columnSpan="2"-->
+                <!--        android:layout_gravity="center_horizontal"-->
+                <!--        android:layout_height="1dp"-->
+                <!--        android:layout_width="200dp"-->
+                <!--        android:background="?android:attr/listDivider" />-->
 
-        <!--            <EditText-->
-        <!--                android:id="@+id/date_start"-->
-        <!--                android:layout_width="wrap_content"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:layout_row="4"-->
-        <!--                android:layout_column="1"-->
-        <!--                android:layout_gravity="left|center"-->
-        <!--                android:ems="10"-->
-        <!--                android:hint="01/Jan/2020"-->
-        <!--                android:inputType="date" />-->
+                <TextView
+                    android:layout_row="0"
+                    android:layout_column="0"
+                    android:layout_gravity="right|center"
+                    android:text="Date start:"
+                    android:textSize="16sp" />
 
-        <TextView
-            android:text="Date end:"
-            android:textSize="16sp"
-            android:layout_column="0"
-            android:layout_row="1"
-            android:layout_gravity="right|center"
-            />
-        <Button
-            android:id="@+id/end_date_btn"
-            android:text="31/Dec/2020..."
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_row="1"
-            android:layout_column="1"
-            />
+                <Button
+                    android:id="@+id/btn__start_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_row="0"
+                    android:layout_column="1"
+                    android:text="01/Jan/2020..." />
 
-        <!--            <EditText-->
-        <!--                android:id="@+id/date_end"-->
-        <!--                android:layout_width="wrap_content"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:layout_row="5"-->
-        <!--                android:layout_column="1"-->
-        <!--                android:ems="10"-->
-        <!--                android:inputType="date"-->
-        <!--                android:hint="31/Dec/2020"-->
-        <!--                android:layout_gravity="left|center"-->
-        <!--                />-->
+                <!--Note: I expected to use an EditText with android:inputType="date", but it didn't -->
+                <!--seem to add any value.  In particular, it doeswn't show a date picker when you click it-->
+                <!--    <EditText-->
+                <!--        android:id="@+id/date_start"-->
+                <!--        android:layout_width="wrap_content"-->
+                <!--        android:layout_height="wrap_content"-->
+                <!--        android:layout_row="4"-->
+                <!--        android:layout_column="1"-->
+                <!--        android:layout_gravity="left|center"-->
+                <!--        android:ems="10"-->
+                <!--        android:hint="01/Jan/2020"-->
+                <!--        android:inputType="date" />-->
 
-    </GridLayout>
+                <TextView
+                    android:layout_row="1"
+                    android:layout_column="0"
+                    android:layout_gravity="right|center"
+                    android:text="Date end:"
+                    android:textSize="16sp" />
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="20dp"
-        android:background="?android:attr/listDivider" />
+                <Button
+                    android:id="@+id/btn__end_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_row="1"
+                    android:layout_column="1"
+                    android:text="31/Dec/2020..." />
 
-    <TextView
-        android:id="@+id/title"
-        android:gravity="center_horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="4dp"
-        android:text="Home page display options:"
-        android:textSize="16sp" />
+            </GridLayout>
 
-<!--    <View-->
-<!--        android:id="@+id/divider"-->
-<!--        android:layout_width="200dp"-->
-<!--        android:layout_height="1dp"-->
-<!--        android:background="?android:attr/listDivider" />-->
 
-        <GridLayout
-            android:layout_gravity="center_horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:columnCount="2"
-            android:useDefaultMargins="true"
-            >
+            <!-- +++++++++++  Options that only apply to the home view list -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="20dp"
+                android:background="?android:attr/listDivider" />
 
             <TextView
-                android:text="Statistics:"
-                android:textSize="16sp"
-                android:layout_column="0"
-                android:layout_row="0"
-                android:layout_gravity="right|center"
-                />
-
-            <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <RadioButton
-                    android:id="@+id/but1"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginBottom="4dp"
+                android:gravity="center_horizontal"
+                android:text="Home page display options:"
+                android:textSize="16sp" />
+
+            <GridLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:columnCount="2"
+                android:useDefaultMargins="true">
+
+                <TextView
+                    android:layout_row="0"
+                    android:layout_column="0"
+                    android:layout_gravity="right|center"
+                    android:text="Statistics:"
+                    android:textSize="16sp" />
+
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RadioButton
+                        android:id="@+id/rdo__proportional"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_row="0"
+                        android:layout_column="1"
+                        android:layout_marginBottom="0dp"
+                        android:checked="true"
+                        android:text="Per 100 k" />
+
+                    <RadioButton
+                        android:id="@+id/rdo__Totals"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_row="1"
+                        android:layout_column="1"
+                        android:layout_marginTop="0dp"
+                        android:text="Totals" />
+
+                </RadioGroup>
+
+                <TextView
+                    android:layout_row="2"
+                    android:layout_column="0"
+                    android:layout_gravity="right|center"
+                    android:text="Sort by:"
+                    android:textSize="16sp" />
+
+                <Spinner
+                    android:id="@+id/spinner__sortby"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_row="2"
+                    android:layout_column="1"
+                    android:hint="...sort by" />
+
+                <TextView
+                    android:layout_row="3"
+                    android:layout_column="0"
+                    android:layout_gravity="right|center"
+                    android:text="Reverse sort:"
+                    android:textSize="16sp" />
+
+                <Switch
+                    android:id="@+id/switch__reverse_sort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_row="3"
+                    android:layout_column="1"
+                    android:checked="true"
+                    android:text="" />
+
+            </GridLayout>
+
+
+            <!-- +++++++++++  Options that apply to just the data table-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="20dp"
+                android:background="?android:attr/listDivider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginBottom="4dp"
+                android:gravity="center_horizontal"
+                android:text="Data table display options:"
+                android:textSize="16sp" />
+
+            <GridLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:columnCount="2"
+                android:useDefaultMargins="true">
+
+                <TextView
+                    android:layout_row="0"
+                    android:layout_column="0"
+                    android:layout_gravity="right|center"
+                    android:text="Table value type:"
+                    android:textSize="16sp" />
+
+                <Spinner
+                    android:id="@+id/spinner__table_value_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_row="0"
                     android:layout_column="1"
-                    android:layout_marginBottom="0dp"
-                    android:checked="true"
-                    android:text="Per 100 k" />
-                <RadioButton
-                    android:id="@+id/but2"
-                    android:layout_column="1"
+                    android:hint="...sort by" />
+
+                <TextView
                     android:layout_row="1"
-                    android:text="Totals"
+                    android:layout_column="0"
+                    android:layout_gravity="right|center"
+                    android:text="Max table rows:"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/edittext__max_table_rows"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="0dp"
-                    />
+                    android:layout_row="1"
+                    android:layout_column="1"
+                    android:layout_gravity="left|center"
+                    android:ems="3"
+                    android:hint="100"
+                    android:inputType="number" />
 
-            </RadioGroup>
+            </GridLayout>
 
-<!--            <View-->
-<!--                android:layout_column="0"-->
-<!--                android:layout_row="2"-->
-<!--                android:layout_columnSpan="2"-->
-<!--                android:layout_gravity="center_horizontal"-->
-<!--                android:layout_height="1dp"-->
-<!--                android:layout_width="200dp"-->
-<!--                android:background="?android:attr/listDivider" />-->
 
-            <TextView
-                android:text="Sort by:"
-                android:textSize="16sp"
-                android:layout_column="0"
-                android:layout_row="2"
-                android:layout_gravity="right|center"
-                />
-            <Spinner
-                android:id="@+id/sortby_list"
-                android:layout_column="1"
-                android:layout_row="2"
-                android:hint="...sort by"
+            <!-- +++++++++++  More options that apply to both home view list and the data table -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:background="?android:attr/listDivider" />
+
+            <Button
+                android:id="@+id/btn__reset_all_options"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:text="Reverse sort:"
-                android:textSize="16sp"
-                android:layout_column="0"
-                android:layout_row="3"
-                android:layout_gravity="right|center"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:text="Reset all options"
                 />
 
-            <Switch
-                android:id="@+id/switch_reverse_sort"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="3"
-                android:layout_column="1"
-                android:checked="true"
-                android:text="" />
-
-
-<!--            <View-->
-<!--                android:layout_column="0"-->
-<!--                android:layout_row="6"-->
-<!--                android:layout_columnSpan="2"-->
-<!--                android:layout_gravity="center_horizontal"-->
-<!--                android:layout_height="1dp"-->
-<!--                android:layout_width="200dp"-->
-<!--                android:background="?android:attr/listDivider" />-->
-        </GridLayout>
-
-    <View
-        android:id="@+id/divider2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="20dp"
-        android:background="?android:attr/listDivider" />
-
-    <TextView
-        android:id="@+id/title2"
-        android:gravity="center_horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="4dp"
-        android:text="Data table display options:"
-        android:textSize="16sp" />
-
-    <GridLayout
-        android:layout_gravity="center_horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:columnCount="2"
-        android:useDefaultMargins="true"
-        >
-        <TextView
-            android:text="Table value type:"
-            android:textSize="16sp"
-            android:layout_column="0"
-            android:layout_row="0"
-            android:layout_gravity="right|center"
-            />
-        <Spinner
-            android:id="@+id/table_value_type_list"
-            android:layout_column="1"
-            android:layout_row="0"
-            android:hint="...sort by"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:text="Max table rows:"
-            android:textSize="16sp"
-            android:layout_column="0"
-            android:layout_row="1"
-            android:layout_gravity="right|center"
-            />
-
-        <EditText
-            android:id="@+id/editTextNumber"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_row="1"
-            android:layout_column="1"
-            android:ems="3"
-            android:hint="100"
-            android:inputType="number"
-            android:layout_gravity="left|center"
-            />
-
-
-        <!--        <Button-->
-        <!--            android:id="@+id/reset"-->
-        <!--            android:text="Reset"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_row="6"-->
-        <!--            android:layout_column="1"-->
-        <!--            />-->
-
-    </GridLayout>
         </LinearLayout>
 
     </ScrollView>
 
+    <!-- +++++++++++  Horizontal line before the dialog buttons -->
     <View
-        android:id="@+id/divider3"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="20dp"

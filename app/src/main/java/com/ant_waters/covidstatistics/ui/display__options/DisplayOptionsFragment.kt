@@ -22,6 +22,14 @@ class DisplayOptionsFragment : DialogFragment()  {
 
         val args = getArguments()
 
+        // Note: It would be nice to have the associated DisplayOptions object passed into
+        // this fragment, so the fragment could potentially be used for multiple versions.
+        // But it appears that it would have to be serialized into args, which is a pain,
+        // and would mean we cannot update it.
+        // So, we will just use a global instance instead.
+
+
+
         var sCountry = " "
 //        var sContinent = " "
 //        var sPopulation = " "

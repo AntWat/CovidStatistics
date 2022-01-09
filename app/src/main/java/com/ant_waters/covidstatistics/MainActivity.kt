@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.activity.viewModels
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -14,17 +16,10 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.fragment.app.viewModels
 import com.ant_waters.covidstatistics.databinding.ActivityMainBinding
 import com.ant_waters.covidstatistics.model.DataManager
-import com.ant_waters.covidstatistics.ui.country_pop_up.CountryPopupFragment
 import com.ant_waters.covidstatistics.ui.display__options.DisplayOptionsFragment
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlin.system.measureTimeMillis
-
-import java.text.SimpleDateFormat
 
 /* TODO Items
 * ) Add options for country list and data table, 4 statistics, filters etc.
@@ -38,40 +33,20 @@ import java.text.SimpleDateFormat
 * */
 
 
-enum class enDataLoaded { None, CountriesOnly, All}
-
 class MainActivity : AppCompatActivity() {
-    companion object {
-        val LOG_TAG = "CovidStatistics_MainAct"
-        var MainPackageName = ""
 
-        val _dataInitialised = MutableLiveData<enDataLoaded>().apply {
-            value = enDataLoaded.None
-        }
-        val DataInitialised: LiveData<enDataLoaded> = _dataInitialised
+    private val mainViewModel: MainViewModel by viewModels()
+//    val mainViewModel: MainViewModel by viewModels()
+//    mainViewModel.getUsers().observe(this, Observer<List<User>>{ users ->
+//        // update UI
+//    })
 
-
-        // This live data flag uses date time so it can be updated to a new value at any time.
-        val _displayOptionsChanged = MutableLiveData<SimpleDateFormat>().apply {
-            value = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
-        }
-        val DisplayOptionsChanged: LiveData<SimpleDateFormat> = _displayOptionsChanged
-
-        public fun UpdateDisplayOptionsChanged()
-        {
-            _displayOptionsChanged.value = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
-        }
-    }
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
-    private var _dataManager = DataManager()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        _dataInitialised.setValue(enDataLoaded.None)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -100,21 +75,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun config()
     {
-        Log.i(LOG_TAG, "config: Starting")
+        Log.i(MainViewModel.LOG_TAG, "config: Starting")
 
-        MainActivity.MainPackageName = this.packageName
+        mainViewModel.Init(this)
 
-        val context: Context = this
-        GlobalScope.launch {
-            val elapsedTime= measureTimeMillis {
-                _dataManager.LoadData(context,
-                    fun(state:enDataLoaded) { _dataInitialised.postValue(state)})
-            }
-            Log.i(LOG_TAG, "LoadData: Finished in ${elapsedTime} millisecs")
-            //_dataInitialised.postValue(enDataLoaded.All)
-        }
-
-        Log.i(LOG_TAG, "config: Finished")
+        Log.i(MainViewModel.LOG_TAG, "config: Finished")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -141,6 +106,8 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.about -> {
                 //showHelp()
+                Toast.makeText(getApplicationContext(),
+                    "Number of CountryAggregates: ${DataManager?.CountryAggregates?.Aggregates?.size?:0}",Toast.LENGTH_SHORT).show();
                 true
             }
             else -> super.onOptionsItemSelected(item)

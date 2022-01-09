@@ -3,14 +3,13 @@ package com.ant_waters.covidstatistics.ui.country_pop_up
 import android.app.Dialog
 import android.content.res.Resources
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import com.ant_waters.covidstatistics.MainActivity
+import com.ant_waters.covidstatistics.MainViewModel
 import com.ant_waters.covidstatistics.R
 import com.ant_waters.covidstatistics.model.DataManager
 import java.text.DecimalFormat
@@ -81,7 +80,7 @@ class CountryPopupFragment : DialogFragment() {
 
             val res: Resources = vw.resources
             val resourceId: Int = res.getIdentifier(geoId.lowercase(),
-                "drawable", MainActivity.MainPackageName)
+                "drawable", MainViewModel.MainPackageName)
 
             imgFlag.setImageResource(resourceId)
 

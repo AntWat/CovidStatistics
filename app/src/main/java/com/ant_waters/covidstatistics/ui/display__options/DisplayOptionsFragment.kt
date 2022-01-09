@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import com.ant_waters.covidstatistics.MainActivity
+import com.ant_waters.covidstatistics.MainViewModel
 import com.ant_waters.covidstatistics.R
 import com.ant_waters.covidstatistics.model.DataManager
 import java.text.DecimalFormat
@@ -99,7 +99,7 @@ class DisplayOptionsFragment : DialogFragment()  {
 
             val res: Resources = vw.resources
             val resourceId: Int = res.getIdentifier(geoId.lowercase(),
-                "drawable", MainActivity.MainPackageName)
+                "drawable", MainViewModel.MainPackageName)
 
 //            imgFlag.setImageResource(resourceId)
 
@@ -111,7 +111,7 @@ class DisplayOptionsFragment : DialogFragment()  {
                 .setPositiveButton("Ok",
                     DialogInterface.OnClickListener { dialog, id ->
                         // TODO: Use the new choices
-                        MainActivity.UpdateDisplayOptionsChanged()
+                        MainViewModel.UpdateDisplayOptionsChanged()
                         getDialog()?.dismiss()
                     })
                 .setNegativeButton("Cancel",

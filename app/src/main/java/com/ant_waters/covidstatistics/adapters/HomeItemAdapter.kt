@@ -31,7 +31,7 @@ class HomeItemAdapter(private val context: Fragment,
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        Log.i(MainActivity.LOG_TAG, "HomeDataItemAdapter.onCreateViewHolder: Started")
+        Log.i(MainViewModel.LOG_TAG, "HomeDataItemAdapter.onCreateViewHolder: Started")
 
         // create a new view
         val adapterLayout = LayoutInflater.from(parent.context)
@@ -41,9 +41,9 @@ class HomeItemAdapter(private val context: Fragment,
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        if (MainActivity.DataInitialised.value == enDataLoaded.CountriesOnly)
+        if (MainViewModel.DataInitialised.value == enDataLoaded.CountriesOnly)
             DisplayCountry(holder, position)
-        else  if (MainActivity.DataInitialised.value==enDataLoaded.All)
+        else  if (MainViewModel.DataInitialised.value==enDataLoaded.All)
             DisplayCountryAndData(holder, position)
 
         holder.itemView.setOnClickListener(View.OnClickListener {
@@ -70,7 +70,7 @@ class HomeItemAdapter(private val context: Fragment,
 
         val res: Resources = context.resources
         val resourceId: Int = res.getIdentifier(c.geoId.lowercase(),
-            "drawable", MainActivity.MainPackageName)
+            "drawable", MainViewModel.MainPackageName)
 
         holder.flagView.setImageResource(resourceId)
     }
@@ -89,7 +89,7 @@ class HomeItemAdapter(private val context: Fragment,
 
         val res: Resources = context.resources
         val resourceId: Int = res.getIdentifier(agg.country.geoId.lowercase(),
-            "drawable", MainActivity.MainPackageName)
+            "drawable", MainViewModel.MainPackageName)
 
         holder.flagView.setImageResource(resourceId)
     }
@@ -105,10 +105,10 @@ class HomeItemAdapter(private val context: Fragment,
     }
 
     override fun getItemCount() =
-        (if (MainActivity.DataInitialised.value==enDataLoaded.CountriesOnly)
+        (if (MainViewModel.DataInitialised.value==enDataLoaded.CountriesOnly)
             countries.size
         else
-            if (MainActivity.DataInitialised.value==enDataLoaded.All)
+            if (MainViewModel.DataInitialised.value==enDataLoaded.All)
                 countryAggregates?.Aggregates?.count()?:0
             else
                 0)

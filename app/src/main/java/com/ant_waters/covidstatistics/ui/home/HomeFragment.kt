@@ -8,8 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import com.ant_waters.covidstatistics.MainActivity
+import com.ant_waters.covidstatistics.MainViewModel
 import com.ant_waters.covidstatistics.adapters.HomeItemAdapter
 import com.ant_waters.covidstatistics.databinding.FragmentHomeBinding
 import com.ant_waters.covidstatistics.enDataLoaded
@@ -31,7 +30,7 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.i(MainActivity.LOG_TAG, "HomeFragment.onCreateView: Started")
+        Log.i(MainViewModel.LOG_TAG, "HomeFragment.onCreateView: Started")
 
 //        homeViewModel =
 //            ViewModelProvider(this).get(HomeViewModel::class.java)
@@ -50,15 +49,15 @@ class HomeFragment : Fragment() {
         // in content do not change the layout size of the RecyclerView
         recyclerView.setHasFixedSize(true)
 
-        MainActivity.DataInitialised.observe(viewLifecycleOwner, Observer {
+        MainViewModel.DataInitialised.observe(viewLifecycleOwner, Observer {
             if (it == enDataLoaded.CountriesOnly) {
-                Log.i(MainActivity.LOG_TAG, "Observer: HomeFragment, MainActivity.DataInitialised: Started for countries")
+                Log.i(MainViewModel.LOG_TAG, "Observer: HomeFragment, Globals.DataInitialised: Started for countries")
                 binding.recyclerView.setVisibility(View.VISIBLE)
 
                 binding.recyclerView.adapter?.notifyItemRangeInserted(0,
                     DataManager.CountryAggregates?.Aggregates?.size?:0)
             } else if (it == enDataLoaded.All) {
-                Log.i(MainActivity.LOG_TAG, "Observer: HomeFragment, MainActivity.DataInitialised: Started for all data")
+                Log.i(MainViewModel.LOG_TAG, "Observer: HomeFragment, Globals.DataInitialised: Started for all data")
                 binding.recyclerView.setVisibility(View.VISIBLE)
                 binding.progressBar1.setVisibility(View.GONE)
                 binding.recyclerView.adapter?.notifyItemRangeChanged(0,
@@ -66,8 +65,8 @@ class HomeFragment : Fragment() {
             }
         })
 
-        MainActivity.DisplayOptionsChanged.observe(viewLifecycleOwner, Observer {
-            Log.i(MainActivity.LOG_TAG, "Observer: HomeFragment, MainActivity.DisplayOptionsChanged: Started")
+        MainViewModel.DisplayOptionsChanged.observe(viewLifecycleOwner, Observer {
+            Log.i(MainViewModel.LOG_TAG, "Observer: HomeFragment, Globals.DisplayOptionsChanged: Started")
             homeItemAdapter.notifyDataSetChanged()
         })
 

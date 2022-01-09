@@ -21,7 +21,7 @@ import android.widget.TableRow.LayoutParams;
 import android.util.Log
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.LinearLayout
-import com.ant_waters.covidstatistics.MainActivity
+import com.ant_waters.covidstatistics.MainViewModel
 import com.ant_waters.covidstatistics.ui.HorizontalScrollViewListener
 import com.ant_waters.covidstatistics.ui.ObservableHorizontalScrollView
 import com.ant_waters.covidstatistics.Utils.SimpleTable2
@@ -79,7 +79,7 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
         horizontalScrollView2!!.setScrollViewListener(this);
 
         // Display the table
-        if (MainActivity.DataInitialised.value==enDataLoaded.All) {
+        if (MainViewModel.DataInitialised.value==enDataLoaded.All) {
             val allCells = displayDataTable(inflater)
 
             val content: View = _binding!!.mainArea
@@ -126,7 +126,7 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
     {
         val maxDataRows = 100
 
-        Log.i(MainActivity.LOG_TAG, "displayTable: Starting")
+        Log.i(MainViewModel.LOG_TAG, "displayTable: Starting")
 
         val numRows = (if (dataTable.NumRows <= maxDataRows) { dataTable.NumRows+1} else {maxDataRows+1})
         var allCells = Array(numRows) {Array<View?>(includeColumns.size+1) {null} }
@@ -179,7 +179,7 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
         // ------------- Create the rows
         for (r in 0..dataTable.NumRows-1) {
             if  (r>maxDataRows-1){ break}
-            Log.i(MainActivity.LOG_TAG, "displayTable: Row ${r}")
+            Log.i(MainViewModel.LOG_TAG, "displayTable: Row ${r}")
 
             allCells[r+1][0] = createRowHeaderCellFromTemplate<TRowHdr>(inflater, dataTable.Rows[r].first)
             setHeaderBg(allCells[r+1][0] as View)
@@ -219,7 +219,7 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
             scrollablePart.addView(row)
         }
 
-        Log.i(MainActivity.LOG_TAG, "displayTable: Finished")
+        Log.i(MainViewModel.LOG_TAG, "displayTable: Finished")
         return  allCells
     }
 

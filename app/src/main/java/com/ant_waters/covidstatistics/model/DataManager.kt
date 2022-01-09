@@ -2,7 +2,7 @@ package com.ant_waters.covidstatistics.model
 
 import android.content.Context
 import android.util.Log
-import com.ant_waters.covidstatistics.MainActivity
+import com.ant_waters.covidstatistics.MainViewModel
 import com.ant_waters.covidstatistics.Utils.DaysDiff
 import com.ant_waters.covidstatistics.Utils.SimpleTable2
 import java.util.*
@@ -59,13 +59,13 @@ class DataManager {
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     private fun LoadDataFromDatabase(context: Context, onDataLoaded:(enDataLoaded)->Unit): Boolean {
-        Log.i(MainActivity.LOG_TAG, "LoadDataFromDatabase: Started")
+        Log.i(MainViewModel.LOG_TAG, "LoadDataFromDatabase: Started")
 
         try {
             val covidDatabase = CovidDatabase.getDatabase(context)
 
             // ---------------------------
-            Log.i(MainActivity.LOG_TAG, "Loading countries")
+            Log.i(MainViewModel.LOG_TAG, "Loading countries")
             val dbCountries = covidDatabase.countryDao().getAll()
 
             val mapCountriesByName = mutableMapOf</*name*/String, Country2>()
@@ -84,7 +84,7 @@ class DataManager {
             onDataLoaded(enDataLoaded.CountriesOnly)
 
             // ---------------------------
-            Log.i(MainActivity.LOG_TAG, "Loading daily data")
+            Log.i(MainViewModel.LOG_TAG, "Loading daily data")
             val dbCovid_data = covidDatabase.covid_dataDao().getAll()
 
             val dailyCovidsByDate = mutableMapOf<Date, MutableList<DailyCovid>>()
@@ -173,15 +173,15 @@ class DataManager {
             }
 
             // ---------------------------
-            Log.i(MainActivity.LOG_TAG, "Creating aggregates")
+            Log.i(MainViewModel.LOG_TAG, "Creating aggregates")
             _countryAggregates.SetData(DateStart, DateEnd, _dailyCovidsByDate)
 
             // ---------------------------
-            Log.i(MainActivity.LOG_TAG, "LoadDataFromDatabase: Finished")
+            Log.i(MainViewModel.LOG_TAG, "LoadDataFromDatabase: Finished")
             onDataLoaded(enDataLoaded.All)
             return true
         } catch (ex: Exception) {
-            Log.i(MainActivity.LOG_TAG, "Error: ${ex.message}")
+            Log.i(MainViewModel.LOG_TAG, "Error: ${ex.message}")
             // TODO: Errorhandling?
             return false
         }
@@ -233,7 +233,7 @@ class DataManager {
                     val c: Country2? = countries[csv.Headers[i]]
                     if (c == null)
                     {
-                        Log.e(MainActivity.LOG_TAG,"Header is not a recognised country: '${csv.Headers[i]}'")
+                        Log.e(MainViewModel.LOG_TAG,"Header is not a recognised country: '${csv.Headers[i]}'")
                         //throw Exception("Header is not a recognised country: '${csv.Headers[i]}'")
                     }
                     else {

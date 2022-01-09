@@ -162,6 +162,9 @@ class DataManager {
             DateEnd = dateEnd!!
             _dailyCovidsByDate  = dailyCovidsByDate.toList()
 
+            MainViewModel.DisplayOptions.startDate = DateStart
+            MainViewModel.DisplayOptions.endDate = DateEnd
+
             _covidCasesTable.addHeaders(headers)
             for (p in casesRows) {
                 _covidCasesTable.addRow(p.first, p.second)

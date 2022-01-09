@@ -2,107 +2,81 @@ package com.ant_waters.covidstatistics.ui.display__options
 
 import android.app.Dialog
 import android.content.DialogInterface
-import android.content.res.Resources
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.Spinner
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentActivity
 import com.ant_waters.covidstatistics.MainViewModel
 import com.ant_waters.covidstatistics.R
-import com.ant_waters.covidstatistics.model.DataManager
-import java.text.DecimalFormat
+import java.text.SimpleDateFormat
 
-class DisplayOptionsFragment : DialogFragment()  {
+class DisplayOptionsFragment(val displayOptions: DisplayOptions) : DialogFragment()  {
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        val args = getArguments()
+        return buildDisplayOptionsEditor(activity)
+    }
 
-        // Note: It would be nice to have the associated DisplayOptions object passed into
-        // this fragment, so the fragment could potentially be used for multiple versions.
-        // But it appears that it would have to be serialized into args, which is a pain,
-        // and would mean we cannot update it.
-        // So, we will just use a global instance instead.
+    fun buildDisplayOptionsEditor(activity: FragmentActivity?) : Dialog
+    {
+        try {
+            Log.i(MainViewModel.LOG_TAG, "buildDisplayOptionsEditor: Started")
+            if (activity == null) {throw IllegalStateException("Activity cannot be null")}
 
-
-
-        var sCountry = " "
-//        var sContinent = " "
-//        var sPopulation = " "
-//        var sProportionalCases = " "
-//        var sProportionalDeaths = " "
-//        var sCases = " "
-//        var sDeaths = " "
-
-        val df1 = DecimalFormat("#")
-        val df2 = DecimalFormat("#.0")
-
-        val geoId: String = args?.getString("geoId")?:""
-
-        for (c in DataManager.Countries) {
-            if (c.geoId == geoId) {
-                sCountry = c.name
-//                sContinent = "${c.countryCode}, ${c.geoId}, ${c.continent}"
-//                sPopulation = "Population: ${c.popData2019}"
-                break
-            }
-        }
-
-//        for (pr in DataManager.CountryAggregates.Aggregates) {
-//            if (pr.first.geoId == geoId) {
-//                val agg = pr.second
-//                sProportionalCases = getDisplayText("Cases: ", agg.proportionalCases, df1, df2)
-//                sProportionalDeaths = getDisplayText("Deaths: ", agg.proportionalDeaths, df1, df2)
-//
-//                sCases = "Total Cases: ${agg.totalCovidCases}"
-//                sDeaths = "Total Deaths: ${agg.totalCovidDeaths}"
-//                break
-//            }
-//        }
-
-        // MaterialAlertDialogBuilder
-
-        return activity?.let {
-            val builder = AlertDialog.Builder(it)
+            val builder = AlertDialog.Builder(activity)         // or use MaterialAlertDialogBuilder
             // Get the layout inflater
             val inflater = requireActivity().layoutInflater;
             val vw = inflater.inflate(R.layout.fragment_display_options, null)
 
-            // -------------- Add the items to the list (spinner)
-            val spinner = vw.findViewById<Spinner>(R.id.spinner__sortby)
+            // -------------- Add the items to the sortby list
+            val spinner__sortby = vw.findViewById<Spinner>(R.id.spinner__sortby)
             val items = arrayOf("Country Name", "Proportional Deaths", "Proprotional Cases", "Total Deaths", "Total Cases")
             val adapter = ArrayAdapter<String>(
                 this.requireContext(),
                 android.R.layout.simple_spinner_dropdown_item,
                 items
             )
-            spinner.setAdapter(adapter)
+            spinner__sortby.setAdapter(adapter)
+
+            // -------------- Add the items to the table_value_type list
+            val spinner__table_value_type = vw.findViewById<Spinner>(R.id.spinner__table_value_type)
+            val items2 = arrayOf("Proportional Deaths", "Proprotional Cases", "Total Deaths", "Total Cases")
+            val adapter2 = ArrayAdapter<String>(
+                this.requireContext(),
+                android.R.layout.simple_spinner_dropdown_item,
+                items
+            )
+            spinner__table_value_type.setAdapter(adapter2)
+
+            // -------------- Initialise the UI
+
+            val btn__start_date = vw.findViewById<View>(com.ant_waters.covidstatistics.R.id.btn__start_date) as Button
+            val btn__end_date = vw.findViewById<View>(com.ant_waters.covidstatistics.R.id.btn__end_date) as Button
+            val rdo__proportional = vw.findViewById<View>(com.ant_waters.covidstatistics.R.id.rdo__proportional) as RadioButton
+            val rdo__Totals = vw.findViewById<View>(com.ant_waters.covidstatistics.R.id.rdo__Totals) as RadioButton
+            val switch__reverse_sort = vw.findViewById<View>(com.ant_waters.covidstatistics.R.id.switch__reverse_sort) as Switch
+            val edittext__max_table_rows = vw.findViewById<View>(com.ant_waters.covidstatistics.R.id.edittext__max_table_rows) as EditText
+            val btn__reset_all_options = vw.findViewById<View>(com.ant_waters.covidstatistics.R.id.btn__reset_all_options) as Button
+
+            btn__start_date.text = (SimpleDateFormat("dd/MMM/yyyy").format(displayOptions.startDate))
+            btn__end_date.text = (SimpleDateFormat("dd/MMM/yyyy").format(displayOptions.endDate))
+
+            if (displayOptions.listStatisticsFormat == DisplayOptions.enStatisticsFormat.Proportional) {
+                rdo__proportional.isChecked = true
+            } else {
+                rdo__Totals.isChecked = true
+            }
+
+            switch__reverse_sort.isChecked = displayOptions.listReverseSort
+
+            edittext__max_table_rows.setText(displayOptions.tableMaxNumberOfRows.toString())
 
 
-                //val imgFlag = vw.findViewById<View>(com.ant_waters.covidstatistics.R.id.flag2) as ImageView
-//            val txtCountry = vw.findViewById<View>(com.ant_waters.covidstatistics.R.id.countryText) as TextView
-//            val txtContinent = vw.findViewById<View>(com.ant_waters.covidstatistics.R.id.continentText) as TextView
-//            val txtPopulation = vw.findViewById<View>(com.ant_waters.covidstatistics.R.id.populationText) as TextView
-//            val txtProportionalCases = vw.findViewById<View>(com.ant_waters.covidstatistics.R.id.proportional_casesText) as TextView
-//            val txtProportionalDeaths = vw.findViewById<View>(com.ant_waters.covidstatistics.R.id.proportional_deathsText) as TextView
-//            val txtCases = vw.findViewById<View>(com.ant_waters.covidstatistics.R.id.casesText) as TextView
-//            val txtDeaths = vw.findViewById<View>(com.ant_waters.covidstatistics.R.id.deathsText) as TextView
-
-//            txtCountry.text = sCountry
-//            txtContinent.text = sContinent
-//            txtPopulation.text = sPopulation
-//            txtProportionalCases.text = sProportionalCases
-//            txtProportionalDeaths.text = sProportionalDeaths
-//            txtCases.text = sCases
-//            txtDeaths.text = sDeaths
-
-            val res: Resources = vw.resources
-            val resourceId: Int = res.getIdentifier(geoId.lowercase(),
-                "drawable", MainViewModel.MainPackageName)
-
-//            imgFlag.setImageResource(resourceId)
-
+            // -------------- Build the dialog
 
             // Inflate and set the layout for the dialog
             // Pass null as the parent view because its going in the dialog layout
@@ -118,18 +92,14 @@ class DisplayOptionsFragment : DialogFragment()  {
                     DialogInterface.OnClickListener { dialog, id ->
                         getDialog()?.cancel()
                     })
-            builder.create()
-        } ?: throw IllegalStateException("Activity cannot be null")
-    }
 
-    fun getDisplayText(prefix: String, stat : Double, df1: DecimalFormat, df2: DecimalFormat) : String
-    {
-        var df: DecimalFormat = df1
-        if (stat < 1)
-        {
-            df = df2
+            return builder.create()
         }
-        return "${prefix}${df.format((stat))} per ${DataManager.PopulationScalerLabel}"
+        catch (ex: Exception)
+        {
+            //Log.e(MainViewModel.LOG_TAG, ex.message?:"")
+            throw(ex)
+        }
     }
 
     override fun onStart() {

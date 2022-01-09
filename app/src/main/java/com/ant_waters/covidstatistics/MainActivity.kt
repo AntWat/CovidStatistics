@@ -116,14 +116,8 @@ class MainActivity : AppCompatActivity() {
 
     fun showDisplayOptions()
     {
-        val dof = DisplayOptionsFragment()
-
-        // Supply country as an argument.
-        val args = Bundle()
-        args.putString("geoId", "BB")
-        dof.setArguments(args)
+        val dof = DisplayOptionsFragment(MainViewModel.DisplayOptions)
 
         dof.show(this.supportFragmentManager, "displayoptions")
-
     }
 }

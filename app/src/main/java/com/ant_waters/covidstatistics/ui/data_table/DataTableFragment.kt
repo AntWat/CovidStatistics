@@ -124,7 +124,7 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
     fun <TRowHdr>displayTable(inflater: LayoutInflater, dataTable: SimpleTable2<TRowHdr, Int>,
                                     includeColumns:List<String>, topLeftText:String): Array<Array<View?>>
     {
-        val maxDataRows = 100
+        val maxDataRows = MainViewModel.DisplayOptions.tableMaxNumberOfRows
 
         Log.i(MainViewModel.LOG_TAG, "displayTable: Starting")
 

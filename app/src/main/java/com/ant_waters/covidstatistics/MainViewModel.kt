@@ -5,7 +5,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.ant_waters.covidstatistics.model.Country2
 import com.ant_waters.covidstatistics.model.DataManager
+import com.ant_waters.covidstatistics.ui.display__options.DisplayOptions
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -30,6 +32,10 @@ public class MainViewModel : ViewModel() {
         {
             _dataInitialised.postValue(newVal)
         }
+
+        // ------------------------
+        private var _displayOptions: DisplayOptions = DisplayOptions()
+        val DisplayOptions get() = this._displayOptions
 
         // ------------------------
         // This live data flag uses date time so it can be updated to a new value at any time.

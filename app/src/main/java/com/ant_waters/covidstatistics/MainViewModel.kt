@@ -37,6 +37,9 @@ public class MainViewModel : ViewModel() {
         private var _displayOptions: DisplayOptions = DisplayOptions()
         val DisplayOptions get() = this._displayOptions
 
+        public lateinit var DisplayOptionsBeingEdited: DisplayOptions
+        // Used as a messy way to pass to the editor, and persist if the editor is showing when the screen is rotated
+
         // ------------------------
         // This live data flag uses date time so it can be updated to a new value at any time.
         val _displayOptionsChanged = MutableLiveData<SimpleDateFormat>().apply {

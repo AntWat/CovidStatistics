@@ -24,13 +24,14 @@ import com.ant_waters.covidstatistics.ui.display__options.DisplayOptionsFragment
 /* TODO Items
 * ) Add options for country list and data table, 4 statistics, filters etc.
 * ) Database CRUD
+* ) Check, and apply, Android/Kotlin standard for capitization of variables, methods, classes, layouts etc.
 * ) Tidy up, sanitise, release as Kotlin demo, announce online.
 *) Search TODO items
 *
 *         * ) Add warning icon to data table
 *         * ) Add popup to display country data:
 *        *   - name, flag, Continent, Population, 4 statistics for 2020
-* */
+*  */
 
 
 class MainActivity : AppCompatActivity() {
@@ -116,7 +117,8 @@ class MainActivity : AppCompatActivity() {
 
     fun showDisplayOptions()
     {
-        val dof = DisplayOptionsFragment(MainViewModel.DisplayOptions)
+        MainViewModel.DisplayOptionsBeingEdited = MainViewModel.DisplayOptions
+        val dof = DisplayOptionsFragment()
 
         dof.show(this.supportFragmentManager, "displayoptions")
     }

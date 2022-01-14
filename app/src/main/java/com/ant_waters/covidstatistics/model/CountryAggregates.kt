@@ -9,6 +9,11 @@ class CountryAggregates {
 
     var Aggregates = mutableListOf<Pair<Country2, CountryAggregate>>()
 
+    val SortedByCountry: List<Pair<Country2, CountryAggregate>>
+        get() {
+            return Aggregates.toList()
+        }
+
     val SortedByProportionalCases: List<Pair<Country2, CountryAggregate>>
         get() {
             return Aggregates.sortedWith (

@@ -27,6 +27,8 @@ import com.ant_waters.covidstatistics.ui.ObservableHorizontalScrollView
 import com.ant_waters.covidstatistics.Utils.SimpleTable2
 import com.ant_waters.covidstatistics.enDataLoaded
 import com.ant_waters.covidstatistics.model.DataManager
+import com.ant_waters.covidstatistics.ui.display__options.DisplayOptions
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -78,6 +80,35 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
         horizontalScrollView1!!.setScrollViewListener(this);
         horizontalScrollView2!!.setScrollViewListener(this);
 
+        displayTheDataTable(inflater)
+
+//        // Display the table
+//        if (MainViewModel.DataInitialised.value==enDataLoaded.All) {
+//            val allCells = displayDataTable(inflater)
+//
+//            val content: View = _binding!!.mainArea
+//            content.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+//                override fun onGlobalLayout() {
+//                    //Remove the observer so we don't get this callback for EVERY layout pass
+//                    content.viewTreeObserver.removeGlobalOnLayoutListener(this)
+//
+//                    //Resize the columns to match the maximum width
+//                    setColumnWidths(allCells, fun (v: View, w: Int) {
+//                        val tv = v.findViewById<View>(com.ant_waters.covidstatistics.R.id.cell_text_view) as TextView
+//                        var lp  = LayoutParams(w, LayoutParams.WRAP_CONTENT)
+//                        v.layoutParams = lp
+//
+//                        tv.setGravity(Gravity.CENTER)
+//                    })
+//                }
+//            })
+//        }
+
+        return root
+    }
+
+    fun displayTheDataTable(inflater: LayoutInflater)
+    {
         // Display the table
         if (MainViewModel.DataInitialised.value==enDataLoaded.All) {
             val allCells = displayDataTable(inflater)
@@ -100,15 +131,40 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
             })
         }
 
-        return root
     }
+
 
     fun displayDataTable(inflater: LayoutInflater): Array<Array<View?>>
     {
-//        val testData = getTestData(20, 100)
+        //        val testData = getTestData(20, 100)
 //        return displayTable<String>(inflater, testData)
 
-        val ranking = DataManager.CountryAggregates.SortedByProportionalCases
+        var dataTable_Int : SimpleTable2<Date, Int>? = null
+        var dataTable_Double : SimpleTable2<Date, Double>? = null
+
+        var ranking = DataManager.CountryAggregates.SortedByTotalCases
+        when (MainViewModel.DisplayOptions.tableValueType) {
+
+            DisplayOptions.enTableValueType.TotalCases -> {
+                dataTable_Int = DataManager.CovidCasesTable
+                ranking = DataManager.CountryAggregates.SortedByTotalCases };
+
+            DisplayOptions.enTableValueType.TotalDeaths -> {
+                dataTable_Int = DataManager.CovidDeathsTable
+                ranking = DataManager.CountryAggregates.SortedByTotalDeaths };
+
+            DisplayOptions.enTableValueType.ProportionalCases -> {
+                dataTable_Double = DataManager.ProportionalCovidCasesTable
+                ranking = DataManager.CountryAggregates.SortedByProportionalCases };
+
+            DisplayOptions.enTableValueType.ProportionalDeaths -> {
+                dataTable_Double = DataManager.ProportionalCovidDeathsTable
+                ranking = DataManager.CountryAggregates.SortedByProportionalDeaths };
+
+//            DisplayOptions.enTableValueType.ProportionalDeaths -> { aggList = countryAggregates.SortedByProportionalDeaths };
+//            DisplayOptions.enTableValueType.TotalCases -> { aggList = countryAggregates.SortedByTotalCases };
+//            DisplayOptions.enTableValueType.ProportionalCases -> { aggList = countryAggregates.SortedByProportionalCases };
+        }
 
         val numCountriesToInclude = 10      // Top ten!
         val includeColumns = mutableListOf<String>()
@@ -116,12 +172,15 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
             includeColumns.add(ranking[p-1].first.name)
         }
 
-        return displayTable<Date>(inflater, DataManager.CovidCasesTable,
-            includeColumns, "End Date")
+        if (dataTable_Int != null) {
+            return displayTable<Date, Int>(inflater, dataTable_Int, includeColumns, "End Date")
+        } else {
+            return displayTable<Date, Double>(inflater, dataTable_Double!!, includeColumns, "End Date")
+        }
     }
 
     // includeColumns should not include the row header
-    fun <TRowHdr>displayTable(inflater: LayoutInflater, dataTable: SimpleTable2<TRowHdr, Int>,
+    fun <TRowHdr, Tval>displayTable(inflater: LayoutInflater, dataTable: SimpleTable2<TRowHdr, Tval>,
                                     includeColumns:List<String>, topLeftText:String): Array<Array<View?>>
     {
         val maxDataRows = MainViewModel.DisplayOptions.tableMaxNumberOfRows
@@ -208,7 +267,7 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
             for (sc in 0..columnMap.size-1) {
                 cIndex = sc+1
                 val c = columnMap[cIndex]
-                allCells[r+1][cIndex] = createDataCellFromTemplate<Int>(inflater,
+                allCells[r+1][cIndex] = createDataCellFromTemplate<Tval>(inflater,
                                             dataTable.Rows[r].second[c!!-1], (sc == worstCol))
                 setContentBg(allCells[r+1][cIndex] as View)
                 row.addView(allCells[r+1][cIndex])
@@ -272,7 +331,13 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
     fun <Tval>createDataCellFromTemplate(inflater: LayoutInflater, theVal: Tval,
                                          showWarning: Boolean): View {
         var templateId = com.ant_waters.covidstatistics.R.layout.data_cell
-        val text = theVal.toString()
+
+        var text = theVal.toString()
+        if (theVal is Double) {
+            val df1 = DecimalFormat("#")
+            val df2 = DecimalFormat("#.0")
+            text = getProportionalDisplayText(text.toDouble(), df1, df2)
+        }
 
         if (showWarning) { templateId = com.ant_waters.covidstatistics.R.layout.warning_data_cell }
         val cellView: View = inflater.inflate(templateId, null)
@@ -281,6 +346,15 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
         tv.text = text
 
         return cellView
+    }
+    fun getProportionalDisplayText(stat : Double, df1: DecimalFormat, df2: DecimalFormat) : String
+    {
+        var df: DecimalFormat = df1
+        if (stat < 1)
+        {
+            df = df2
+        }
+        return "${df.format((stat))}"
     }
 
 

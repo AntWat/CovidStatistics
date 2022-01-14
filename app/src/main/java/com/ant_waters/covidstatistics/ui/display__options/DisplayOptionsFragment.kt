@@ -35,6 +35,8 @@ class DisplayOptionsFragment() : DialogFragment()  {
     lateinit var spinner__table_value_type: Spinner
     lateinit var edittext__max_table_rows: EditText
     lateinit var btn__reset_all_options: Button
+    lateinit var btn__ok: Button
+    lateinit var btn__cancel: Button
 
     val map__sortby = mapOf<DisplayOptions.enSortBy, String>(
         DisplayOptions.enSortBy.CountryName to "Country Name",
@@ -58,7 +60,6 @@ class DisplayOptionsFragment() : DialogFragment()  {
             if (activity == null) {throw IllegalStateException("Activity cannot be null")}
 
             val builder = MaterialAlertDialogBuilder(activity)         // or use MaterialAlertDialogBuilder
-            // Get the layout inflater
             val inflater = requireActivity().layoutInflater;
             myView = inflater.inflate(R.layout.fragment_display_options, null)
 
@@ -85,6 +86,12 @@ class DisplayOptionsFragment() : DialogFragment()  {
             // -------------- Initialise the UI
             getWidgets()
             showDisplayOptions()
+
+            btn__start_date.setOnClickListener { setDate(btn__start_date, "Start date") }
+            btn__end_date.setOnClickListener { setDate(btn__end_date, "End date") }
+            btn__ok.setOnClickListener { btnOk_Click() }
+            btn__cancel.setOnClickListener { btnCancel_Click() }
+            btn__reset_all_options.setOnClickListener { btnResetAll_Click() }
 
             // -------------- Build the dialog
 
@@ -137,6 +144,8 @@ class DisplayOptionsFragment() : DialogFragment()  {
         switch__reverse_sort = myView.findViewById<View>(com.ant_waters.covidstatistics.R.id.switch__reverse_sort) as Switch
         edittext__max_table_rows = myView.findViewById<View>(com.ant_waters.covidstatistics.R.id.edittext__max_table_rows) as EditText
         btn__reset_all_options = myView.findViewById<View>(com.ant_waters.covidstatistics.R.id.btn__reset_all_options) as Button
+        btn__ok = myView.findViewById<View>(com.ant_waters.covidstatistics.R.id.btn__ok) as Button
+        btn__cancel = myView.findViewById<View>(com.ant_waters.covidstatistics.R.id.btn__cancel) as Button
     }
 
     val datePattern = "dd/MMM/yyyy"
@@ -191,5 +200,28 @@ class DisplayOptionsFragment() : DialogFragment()  {
         return  "" // Success
     }
 
+    fun setDate(btn: Button, title: String)
+    {
+        // TODO
+    }
+    fun btnOk_Click()
+    {
+        val errMsg = readDisplayOptions()
+        if (errMsg.length > 0) {
+            Toast.makeText(getActivity()?.getApplicationContext(),
+                "Error! ${errMsg}",Toast.LENGTH_SHORT).show();      // TODO: Red text
+        } else {
+            MainViewModel.UpdateDisplayOptionsChanged()
+            getDialog()?.dismiss()
+        }
+    }
+    fun btnCancel_Click()
+    {
+        getDialog()?.dismiss()
+    }
+    fun btnResetAll_Click()
+    {
+        // TODO
+    }
 
 }

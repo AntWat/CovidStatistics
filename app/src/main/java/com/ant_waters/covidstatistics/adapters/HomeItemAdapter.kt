@@ -16,6 +16,7 @@ import java.text.DecimalFormat
 import com.ant_waters.covidstatistics.*
 import android.os.Bundle
 import com.ant_waters.covidstatistics.ui.country_pop_up.CountryPopupFragment
+import com.ant_waters.covidstatistics.ui.display__options.DisplayOptions
 
 class HomeItemAdapter(private val context: Fragment,
                       private val countries: List<Country2>,
@@ -78,14 +79,30 @@ class HomeItemAdapter(private val context: Fragment,
     fun DisplayCountryAndData(holder: ItemViewHolder, position: Int) {
         if (countryAggregates == null) { return }
 
-        val kvp = countryAggregates.Aggregates[position]
+        var aggList = countryAggregates.SortedByCountry
+        when (MainViewModel.DisplayOptions.listSortBy) {
+            DisplayOptions.enSortBy.TotalDeaths -> { aggList = countryAggregates.SortedByTotalDeaths };
+            DisplayOptions.enSortBy.ProportionalDeaths -> { aggList = countryAggregates.SortedByProportionalDeaths };
+            DisplayOptions.enSortBy.TotalCases -> { aggList = countryAggregates.SortedByTotalCases };
+            DisplayOptions.enSortBy.ProportionalCases -> { aggList = countryAggregates.SortedByProportionalCases };
+        }
+
+        var index = position
+        if (MainViewModel.DisplayOptions.listReverseSort) {index = aggList.size - position - 1}
+
+        val kvp = aggList[index]
         holder.countryView.text = kvp.first.name
         val agg: CountryAggregate = kvp.second
         val df1 = DecimalFormat("#")
         val df2 = DecimalFormat("#.0")
 
-        holder.casesView.text = getDisplayText("Cases: ", agg.proportionalCases, df1, df2)
-        holder.deathsView.text = getDisplayText("Deaths: ", agg.proportionalDeaths, df1, df2)
+        if  (MainViewModel.DisplayOptions.listStatisticsFormat == DisplayOptions.enStatisticsFormat.Proportional) {
+            holder.casesView.text = getProportionalDisplayText("Cases: ", agg.proportionalCases, df1, df2)
+            holder.deathsView.text = getProportionalDisplayText("Deaths: ", agg.proportionalDeaths, df1, df2)
+        } else {
+            holder.casesView.text = getTotalDisplayText("Cases: ", agg.totalCovidCases)
+            holder.deathsView.text = getTotalDisplayText("Deaths: ", agg.totalCovidDeaths)
+        }
 
         val res: Resources = context.resources
         val resourceId: Int = res.getIdentifier(agg.country.geoId.lowercase(),
@@ -94,7 +111,7 @@ class HomeItemAdapter(private val context: Fragment,
         holder.flagView.setImageResource(resourceId)
     }
 
-    fun getDisplayText(prefix: String, stat : Double, df1: DecimalFormat, df2: DecimalFormat) : String
+    fun getProportionalDisplayText(prefix: String, stat : Double, df1: DecimalFormat, df2: DecimalFormat) : String
     {
         var df: DecimalFormat = df1
         if (stat < 1)
@@ -102,6 +119,10 @@ class HomeItemAdapter(private val context: Fragment,
             df = df2
         }
         return "${prefix}${df.format((stat))} per ${DataManager.PopulationScalerLabel}"
+    }
+    fun getTotalDisplayText(prefix: String, stat : Int) : String
+    {
+        return "${prefix}${stat}"
     }
 
     override fun getItemCount() =

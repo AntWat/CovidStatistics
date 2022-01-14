@@ -43,6 +43,12 @@ class DataManager {
         private var _covidDeathsTable = SimpleTable2<Date, Int>()
         val CovidDeathsTable get() = this._covidDeathsTable
 
+        private var _proportionalCovidCasesTable = SimpleTable2<Date, Double>()
+        val ProportionalCovidCasesTable get() = this._proportionalCovidCasesTable
+
+        private var _proportionalCovidDeathsTable = SimpleTable2<Date, Double>()
+        val ProportionalCovidDeathsTable get() = this._proportionalCovidDeathsTable
+
         val MinPopulationForRanking = 1000000
     }
 
@@ -95,6 +101,8 @@ class DataManager {
             headers.add("")
             var casesRows = mutableListOf<Pair<Date, MutableList<Int/*Value*/>>>()
             var deathsRows = mutableListOf<Pair<Date, MutableList<Int/*Value*/>>>()
+            var proportionalCasesRows = mutableListOf<Pair<Date, MutableList<Double/*Value*/>>>()
+            var proportionalDeathsRows = mutableListOf<Pair<Date, MutableList<Double/*Value*/>>>()
 
             var dateStart: Date? = null
             var dateEnd: Date? = null
@@ -117,6 +125,8 @@ class DataManager {
                         if (!rowMap.containsKey(d)) {
                             casesRows.add(Pair<Date, MutableList<Int>>(d, mutableListOf<Int>()))
                             deathsRows.add(Pair<Date, MutableList<Int>>(d, mutableListOf<Int>()))
+                            proportionalCasesRows.add(Pair<Date, MutableList<Double>>(d, mutableListOf<Double>()))
+                            proportionalDeathsRows.add(Pair<Date, MutableList<Double>>(d, mutableListOf<Double>()))
 
                             val newRowIndex: Int = casesRows.size - 1
                             rowMap.put(d, newRowIndex)
@@ -124,6 +134,8 @@ class DataManager {
                             for (c in 1..headers.size - 1) {
                                 casesRows[newRowIndex].second.add(0)
                                 deathsRows[newRowIndex].second.add(0)
+                                proportionalCasesRows[newRowIndex].second.add(0.0)
+                                proportionalDeathsRows[newRowIndex].second.add(0.0)
                             }
                         }
                     }
@@ -142,6 +154,8 @@ class DataManager {
                     {
                         for (r in casesRows) { r.second.add(0) }
                         for (r in deathsRows) { r.second.add(0) }
+                        for (r in proportionalCasesRows) { r.second.add(0.0) }
+                        for (r in proportionalDeathsRows) { r.second.add(0.0) }
 
                         headers.add(c.name)
                         columnMap.put(c, headers.size-2)
@@ -155,6 +169,9 @@ class DataManager {
 
                     casesRows[rowMap[aggregatedDate]!!].second[columnMap[c]!!] += cases
                     deathsRows[rowMap[aggregatedDate]!!].second[columnMap[c]!!] += deaths
+                    proportionalCasesRows[rowMap[aggregatedDate]!!].second[columnMap[c]!!] += (cases.toDouble() * DataManager.PopulationScaler.toDouble() / c.popData2019)
+                    proportionalDeathsRows[rowMap[aggregatedDate]!!].second[columnMap[c]!!] += (deaths.toDouble() * DataManager.PopulationScaler.toDouble() / c.popData2019)
+
                 }
             }
 
@@ -174,6 +191,17 @@ class DataManager {
             for (p in deathsRows) {
                 _covidDeathsTable.addRow(p.first, p.second)
             }
+
+            _proportionalCovidCasesTable.addHeaders(headers)
+            for (p in proportionalCasesRows) {
+                _proportionalCovidCasesTable.addRow(p.first, p.second)
+            }
+
+            _proportionalCovidDeathsTable.addHeaders(headers)
+            for (p in proportionalDeathsRows) {
+                _proportionalCovidDeathsTable.addRow(p.first, p.second)
+            }
+
 
             // ---------------------------
             Log.i(MainViewModel.LOG_TAG, "Creating aggregates")

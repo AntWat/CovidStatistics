@@ -20,6 +20,7 @@ import androidx.fragment.app.viewModels
 import com.ant_waters.covidstatistics.databinding.ActivityMainBinding
 import com.ant_waters.covidstatistics.model.DataManager
 import com.ant_waters.covidstatistics.ui.display__options.DisplayOptionsFragment
+import com.ant_waters.covidstatistics.ui.display__options.JunkDialogFragment
 
 /* TODO Items
 * ) Add options for country list and data table, 4 statistics, filters etc.
@@ -98,7 +99,9 @@ class MainActivity : AppCompatActivity() {
         // Handle item selection
         return when (item.itemId) {
             R.id.action_settings -> {
-                //newGame()
+                val jdf = JunkDialogFragment()
+
+                jdf.show(this.supportFragmentManager, "JunkDialogFragment")
                 true
             }
             R.id.display_options -> {

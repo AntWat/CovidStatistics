@@ -201,17 +201,22 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
             includeColumns.add(ranking[p-1].first.name)
         }
 
+        val startDate = Date("04/01/2020")
+        val endDate = Date("08/31/2020")
+        val rowTestFun: (Date)->Boolean = { d -> ((d >= startDate) && (d <= endDate))}
+
         // ------------ Display
         if (dataTable_Int != null) {
-            return displayTable<Date, Int>(inflater, dataTable_Int, includeColumns, "End Date")
+            return displayTable<Date, Int>(inflater, dataTable_Int, includeColumns, rowTestFun,"End Date")
         } else {
-            return displayTable<Date, Double>(inflater, dataTable_Double!!, includeColumns, "End Date")
+            return displayTable<Date, Double>(inflater, dataTable_Double!!, includeColumns, rowTestFun, "End Date")
         }
     }
 
     // includeColumns should not include the row header
     fun <TRowHdr, Tval>displayTable(inflater: LayoutInflater, dataTable: SimpleTable2<TRowHdr, Tval>,
-                                    includeColumns:List<String>, topLeftText:String): Array<Array<View?>>
+                                    includeColumns:List<String>, rowTestFun: (TRowHdr)->Boolean,
+                                    topLeftText:String): Array<Array<View?>>
     {
         val maxDataRows = MainViewModel.DisplayOptions.tableMaxNumberOfRows
 
@@ -265,8 +270,14 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
         val scrollablePart = _binding?.scrollablePart as TableLayout
 
         // ------------- Create the rows
+        var rCount = 0
         for (r in 0..dataTable.NumRows-1) {
-            if  (r>maxDataRows-1){ break}
+            rCount++
+            if  (rCount>maxDataRows){ break}
+            if (!rowTestFun(dataTable.Rows[r].first)) {
+                continue
+            }
+
             Log.i(MainViewModel.LOG_TAG, "displayTable: Row ${r}")
 
             allCells[r+1][0] = createRowHeaderCellFromTemplate<TRowHdr>(inflater, dataTable.Rows[r].first)
@@ -317,6 +328,7 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
         val colWidths = Array<Int>(numColumns, {0})
         for (r in 0..allCells.size-1)
         {
+            if ((allCells[r] == null) || (allCells[r][0] == null)) { continue }    // Row was skipped
             for (c in 0..numColumns-1)
             {
                 val vw : View = allCells[r][c]!!
@@ -325,6 +337,7 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
         }
         for (r in 0..allCells.size-1)
         {
+            if ((allCells[r] == null) || (allCells[r][0] == null)) { continue }    // Row was skipped
             for (c in 0..numColumns-1)
             {
                 val vw = allCells[r][c]!! as LinearLayout

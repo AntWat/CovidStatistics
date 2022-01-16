@@ -25,7 +25,7 @@ import com.ant_waters.covidstatistics.ui.display__options.JunkDialogFragment
 /* TODO Items
 * ) Database CRUD
 * ) Settings, About, slideshow, floating button on home page
-* ) Check, and apply, Android/Kotlin standard for capitization of variables, methods, classes, layouts etc.
+* ) Check, and apply, Android/Kotlin standard for capitalization of variables, methods, classes, layouts etc.
 * ) Tidy up, sanitise, release as Kotlin demo, announce online.
 *) Search TODO items
 *  */

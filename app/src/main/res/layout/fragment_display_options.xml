@@ -32,86 +32,23 @@
 
 
             <!-- +++++++++++  Options that apply to both home view list and the data table -->
-            <GridLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="50dp"
-                android:columnCount="2"
-                android:useDefaultMargins="true">
-
-                <!-- Example of a line that spans multiple columns-->
-                <!--    <View-->
-                <!--        android:layout_column="0"-->
-                <!--        android:layout_row="0"-->
-                <!--        android:layout_columnSpan="2"-->
-                <!--        android:layout_gravity="center_horizontal"-->
-                <!--        android:layout_height="1dp"-->
-                <!--        android:layout_width="200dp"-->
-                <!--        android:background="?android:attr/listDivider" />-->
-
-                <TextView
-                    android:layout_row="0"
-                    android:layout_column="0"
-                    android:layout_gravity="right|center"
-                    android:text="Date start:"
-                    android:textSize="16sp" />
-
-                <Button
-                    android:id="@+id/btn__start_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_row="0"
-                    android:layout_column="1"
-                    android:text="01/Jan/2020..." />
-
-                <!--Note: I expected to use an EditText with android:inputType="date", but it didn't -->
-                <!--seem to add any value.  In particular, it doeswn't show a date picker when you click it-->
-                <!--    <EditText-->
-                <!--        android:id="@+id/date_start"-->
-                <!--        android:layout_width="wrap_content"-->
-                <!--        android:layout_height="wrap_content"-->
-                <!--        android:layout_row="4"-->
-                <!--        android:layout_column="1"-->
-                <!--        android:layout_gravity="left|center"-->
-                <!--        android:ems="10"-->
-                <!--        android:hint="01/Jan/2020"-->
-                <!--        android:inputType="date" />-->
-
-                <TextView
-                    android:layout_row="1"
-                    android:layout_column="0"
-                    android:layout_gravity="right|center"
-                    android:text="Date end:"
-                    android:textSize="16sp" />
-
-                <Button
-                    android:id="@+id/btn__end_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_row="1"
-                    android:layout_column="1"
-                    android:text="31/Dec/2020..." />
-
-            </GridLayout>
-
 
             <!-- +++++++++++  Options that only apply to the home view list -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="20dp"
-                android:background="?android:attr/listDivider" />
+<!--            <View-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="1dp"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:background="?android:attr/listDivider" />-->
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
-                android:layout_marginTop="6dp"
                 android:layout_marginRight="4dp"
                 android:layout_marginBottom="4dp"
                 android:gravity="center_horizontal"
                 android:text="Home page display options:"
+                android:layout_marginTop="70dp"
                 android:textSize="16sp" />
 
             <GridLayout
@@ -213,6 +150,70 @@
                 android:columnCount="2"
                 android:useDefaultMargins="true">
 
+                <!-- Example of a line that spans multiple columns-->
+                <!--    <View-->
+                <!--        android:layout_column="0"-->
+                <!--        android:layout_row="0"-->
+                <!--        android:layout_columnSpan="2"-->
+                <!--        android:layout_gravity="center_horizontal"-->
+                <!--        android:layout_height="1dp"-->
+                <!--        android:layout_width="200dp"-->
+                <!--        android:background="?android:attr/listDivider" />-->
+
+                <TextView
+                    android:layout_row="0"
+                    android:layout_column="0"
+                    android:layout_gravity="right|center"
+                    android:text="Date start:"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/btn__start_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_row="0"
+                    android:layout_column="1"
+                    android:text="01/Jan/2020..." />
+
+                <!--Note: I expected to use an EditText with android:inputType="date", but it didn't -->
+                <!--seem to add any value.  In particular, it doeswn't show a date picker when you click it-->
+                <!--    <EditText-->
+                <!--        android:id="@+id/date_start"-->
+                <!--        android:layout_width="wrap_content"-->
+                <!--        android:layout_height="wrap_content"-->
+                <!--        android:layout_row="4"-->
+                <!--        android:layout_column="1"-->
+                <!--        android:layout_gravity="left|center"-->
+                <!--        android:ems="10"-->
+                <!--        android:hint="01/Jan/2020"-->
+                <!--        android:inputType="date" />-->
+
+                <TextView
+                    android:layout_row="1"
+                    android:layout_column="0"
+                    android:layout_gravity="right|center"
+                    android:text="Date end:"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/btn__end_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_row="1"
+                    android:layout_column="1"
+                    android:text="31/Dec/2020..." />
+
+            </GridLayout>
+
+
+
+            <GridLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:columnCount="2"
+                android:useDefaultMargins="true">
+
                 <TextView
                     android:layout_row="0"
                     android:layout_column="0"
@@ -300,7 +301,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="0dp"
-                android:minWidth="80dp"
+                android:minWidth="40dp"
                 android:layout_marginStart="25dp"
                 android:text="Ok"
                 />

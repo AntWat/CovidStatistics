@@ -1,5 +1,6 @@
 package com.ant_waters.covidstatistics.ui.display__options
 
+import android.app.DatePickerDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +13,7 @@ import com.ant_waters.covidstatistics.MainViewModel
 import com.ant_waters.covidstatistics.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.SimpleDateFormat
+import java.util.*
 
 // TODO:
 // *) Still not showing correctly, hacky use of margins required
@@ -184,6 +186,15 @@ class DisplayOptionsFragment() : DialogFragment()  {
 
     fun setDate(btn: Button, title: String)
     {
+        val useDate: (Int, Int, Int)->Unit = fun(year, month, day)
+        {
+            val newDate: Date = Date(year, month, day)
+            btn.text = (SimpleDateFormat(datePattern).format(newDate))
+        }
+
+        val newFragment = DisplayOptionsDatePickerFragment(useDate)
+        newFragment.show(requireActivity()?.getSupportFragmentManager(), "DisplayOptionsDatePicker")
+
         // TODO Next:
     }
     fun btnOk_Click()
@@ -207,4 +218,24 @@ class DisplayOptionsFragment() : DialogFragment()  {
         showDisplayOptions()
     }
 
+}
+
+class DisplayOptionsDatePickerFragment(val useDate: (year: Int, month: Int, day: Int)->Unit) : DialogFragment(), DatePickerDialog.OnDateSetListener {
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog
+    {
+        // Use the current date as the default date in the picker
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH)
+        val day = c.get(Calendar.DAY_OF_MONTH)
+
+        // Create a new instance of DatePickerDialog and return it
+        return DatePickerDialog(requireActivity(), this, year, month, day)
+    }
+
+    override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
+        // Do something with the date chosen by the user
+        useDate(year, month, day)
+    }
 }

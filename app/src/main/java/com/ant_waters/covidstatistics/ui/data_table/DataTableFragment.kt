@@ -1,32 +1,31 @@
 package com.ant_waters.covidstatistics.ui.data_table
 
-import androidx.lifecycle.ViewModelProvider
-import com.ant_waters.covidstatistics.databinding.FragmentDataTableBinding
-
-
+import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Gravity
-
-import android.widget.TextView;
-import android.content.Context
-
-import android.widget.TableLayout
-import android.widget.TableRow
-
-import android.widget.TableRow.LayoutParams;
-import android.util.Log
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.LinearLayout
+import android.widget.TableLayout
+import android.widget.TableRow
+import android.widget.TableRow.LayoutParams
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.paging.PagingSource
 import com.ant_waters.covidstatistics.MainViewModel
-import com.ant_waters.covidstatistics.ui.HorizontalScrollViewListener
-import com.ant_waters.covidstatistics.ui.ObservableHorizontalScrollView
+import com.ant_waters.covidstatistics.R
 import com.ant_waters.covidstatistics.Utils.SimpleTable2
+import com.ant_waters.covidstatistics.databinding.FragmentDataTableBinding
 import com.ant_waters.covidstatistics.enDataLoaded
 import com.ant_waters.covidstatistics.model.DataManager
+import com.ant_waters.covidstatistics.ui.HorizontalScrollViewListener
+import com.ant_waters.covidstatistics.ui.ObservableHorizontalScrollView
 import com.ant_waters.covidstatistics.ui.display__options.DisplayOptions
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -80,36 +79,54 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
         horizontalScrollView1!!.setScrollViewListener(this);
         horizontalScrollView2!!.setScrollViewListener(this);
 
-        displayTheDataTable(inflater)
-
-//        // Display the table
-//        if (MainViewModel.DataInitialised.value==enDataLoaded.All) {
-//            val allCells = displayDataTable(inflater)
-//
-//            val content: View = _binding!!.mainArea
-//            content.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-//                override fun onGlobalLayout() {
-//                    //Remove the observer so we don't get this callback for EVERY layout pass
-//                    content.viewTreeObserver.removeGlobalOnLayoutListener(this)
-//
-//                    //Resize the columns to match the maximum width
-//                    setColumnWidths(allCells, fun (v: View, w: Int) {
-//                        val tv = v.findViewById<View>(com.ant_waters.covidstatistics.R.id.cell_text_view) as TextView
-//                        var lp  = LayoutParams(w, LayoutParams.WRAP_CONTENT)
-//                        v.layoutParams = lp
-//
-//                        tv.setGravity(Gravity.CENTER)
-//                    })
-//                }
-//            })
-//        }
+        MainViewModel.DisplayOptionsChanged.observe(viewLifecycleOwner, Observer {
+            Log.i(MainViewModel.LOG_TAG, "Observer: DataTableFragment, Globals.DisplayOptionsChanged: Started")
+            RefreshTheDataTable(inflater)   // Note that this get's called on first load also
+        })
 
         return root
     }
 
+    fun RefreshTheDataTable(inflater: LayoutInflater)
+    {
+        binding.progressBar1.setVisibility(View.VISIBLE)    // This doesn't work because the view is not visible till we finish this routine
+
+        clearTheDataTable()
+        displayTheDataTable(inflater)
+
+        binding.progressBar1.setVisibility(View.GONE)
+
+        // In the code below I was trying to just refresh the fragment, but it doesn't work
+        // because observing LIVE data seems to automatically recreate the fragment, so at this
+        // point findFragmentById returns null for both this fragment and it's navigation parent
+        //
+        //            val currentFragment = requireActivity()?.getSupportFragmentManager()?.findFragmentById(R.id.nav_data_table)
+        //             Or:
+        //            val navHostFragment = requireActivity()?.getSupportFragmentManager()?.findFragmentById(R.id.mobile_navigation)
+        //            val currentFragment = navHostFragment?.childFragmentManager?.findFragmentById(R.id.nav_data_table)
+        //
+        //            if (currentFragment != null) {
+        //                Log.i(MainViewModel.LOG_TAG, "Detaching and reattaching fragment")
+        //                val fragTransaction = (requireActivity())?.getSupportFragmentManager()?.beginTransaction()
+        //                fragTransaction?.detach(currentFragment)?.attach(currentFragment)?.commit()
+        //            }
+    }
+
+    fun clearTheDataTable()
+    {
+        val topLeftTL = _binding?.topLeftCell as TableLayout
+        val header = _binding?.tableHeader as TableLayout
+        val fixedColumn = _binding?.fixedColumn as TableLayout
+        val scrollablePart = _binding?.scrollablePart as TableLayout
+
+        topLeftTL.removeAllViewsInLayout()
+        header.removeAllViewsInLayout()
+        fixedColumn.removeAllViewsInLayout()
+        scrollablePart.removeAllViewsInLayout()
+    }
+
     fun displayTheDataTable(inflater: LayoutInflater)
     {
-        // Display the table
         if (MainViewModel.DataInitialised.value==enDataLoaded.All) {
             val allCells = displayDataTable(inflater)
 
@@ -130,48 +147,57 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
                 }
             })
         }
-
     }
 
 
     fun displayDataTable(inflater: LayoutInflater): Array<Array<View?>>
     {
+        //        // ------------ Use test data
         //        val testData = getTestData(20, 100)
-//        return displayTable<String>(inflater, testData)
+        //        return displayTable<String>(inflater, testData)
 
+        // ------------ Decide which table to display
         var dataTable_Int : SimpleTable2<Date, Int>? = null
         var dataTable_Double : SimpleTable2<Date, Double>? = null
 
         var ranking = DataManager.CountryAggregates.SortedByTotalCases
+        var label = "${DataManager.AggregationPeriodInDays} day "
         when (MainViewModel.DisplayOptions.tableValueType) {
 
             DisplayOptions.enTableValueType.TotalCases -> {
                 dataTable_Int = DataManager.CovidCasesTable
-                ranking = DataManager.CountryAggregates.SortedByTotalCases };
+                ranking = DataManager.CountryAggregates.SortedByTotalCases
+                label += "cases" }
 
             DisplayOptions.enTableValueType.TotalDeaths -> {
                 dataTable_Int = DataManager.CovidDeathsTable
-                ranking = DataManager.CountryAggregates.SortedByTotalDeaths };
+                ranking = DataManager.CountryAggregates.SortedByTotalDeaths
+                label += "deaths" }
 
             DisplayOptions.enTableValueType.ProportionalCases -> {
                 dataTable_Double = DataManager.ProportionalCovidCasesTable
-                ranking = DataManager.CountryAggregates.SortedByProportionalCases };
+                ranking = DataManager.CountryAggregates.SortedByProportionalCases
+                label += "cases per ${DataManager.PopulationScalerLabel}" }
 
             DisplayOptions.enTableValueType.ProportionalDeaths -> {
                 dataTable_Double = DataManager.ProportionalCovidDeathsTable
-                ranking = DataManager.CountryAggregates.SortedByProportionalDeaths };
-
-//            DisplayOptions.enTableValueType.ProportionalDeaths -> { aggList = countryAggregates.SortedByProportionalDeaths };
-//            DisplayOptions.enTableValueType.TotalCases -> { aggList = countryAggregates.SortedByTotalCases };
-//            DisplayOptions.enTableValueType.ProportionalCases -> { aggList = countryAggregates.SortedByProportionalCases };
+                ranking = DataManager.CountryAggregates.SortedByProportionalDeaths
+                label += "deaths per ${DataManager.PopulationScalerLabel}" }
         }
 
+        // ------------ Decide which countries to display
         val numCountriesToInclude = 10      // Top ten!
+        //label += ", worst ${numCountriesToInclude} countries"
+        val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
+        actionBar?.title = label
+        actionBar?.subtitle = "worst ${numCountriesToInclude} countries"
+
         val includeColumns = mutableListOf<String>()
         for (p in 1..numCountriesToInclude) {
             includeColumns.add(ranking[p-1].first.name)
         }
 
+        // ------------ Display
         if (dataTable_Int != null) {
             return displayTable<Date, Int>(inflater, dataTable_Int, includeColumns, "End Date")
         } else {
@@ -198,7 +224,6 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
         val topLeftTL = _binding?.topLeftCell as TableLayout
         row.setLayoutParams(wrapWrapTableRowParams)
         row.setGravity(Gravity.CENTER)
-        //val topLeftText = dataTable.Headers[0]
         allCells[0][0] = createHeaderCellFromTemplate(inflater, topLeftText)
         setHeaderBg(allCells[0][0] as View)
         row.addView(allCells[0][0])
@@ -247,9 +272,9 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
             fixedColumn.addView(row)
 
             // ----------- Find the worst column
-            var worstVal = -1
             var worstCol = -1
-                                // The real code...
+                                // This is the real code to do it, but the result is not so interesting...
+                                //            var worstVal = -1
                                 //            for (sc in 0..columnMap.size-1) {
                                 //                cIndex = sc+1
                                 //                val c = columnMap[cIndex]
@@ -431,6 +456,4 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
         }
         return table
     }
-
-
 }

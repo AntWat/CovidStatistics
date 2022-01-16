@@ -13,6 +13,11 @@ import com.ant_waters.covidstatistics.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.SimpleDateFormat
 
+// TODO:
+// *) Still not showing correctly, hacky use of margins required
+// *) Cancel button is 2 lines on my phone
+// *) setDate
+
 class DisplayOptionsFragment() : DialogFragment()  {
 
     private lateinit var _displayOptions: DisplayOptions
@@ -179,7 +184,7 @@ class DisplayOptionsFragment() : DialogFragment()  {
 
     fun setDate(btn: Button, title: String)
     {
-        // TODO
+        // TODO Next:
     }
     fun btnOk_Click()
     {

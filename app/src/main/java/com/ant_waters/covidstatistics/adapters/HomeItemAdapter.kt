@@ -56,7 +56,7 @@ class HomeItemAdapter(private val context: Fragment,
             args.putString("geoId", c.geoId)
             cpf.setArguments(args)
 
-            cpf.show(context.childFragmentManager, "countrypopup")
+            cpf.show(context.childFragmentManager, "countrypopup_from_home")
         })
     }
 

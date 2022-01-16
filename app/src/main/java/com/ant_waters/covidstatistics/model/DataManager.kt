@@ -25,6 +25,13 @@ class DataManager {
         private var _countries = mutableListOf<Country2>()
         val Countries get() = this._countries
 
+        val _countriesByName = mutableMapOf<String, Country2>()
+        val CountriesByName: Map<String, Country2>
+            get() {
+                return _countriesByName.toMap()
+            }
+
+
         private var _dailyCovidsByDate = listOf<Pair<Date, MutableList<DailyCovid>>>()
         val DailyCovidsByDate get() = this._dailyCovidsByDate
 
@@ -83,6 +90,7 @@ class DataManager {
 
                 val c = Country2(dbc, cdata?.population_2019?:0)
                 _countries.add(c)
+                _countriesByName.put(c.name, c)
                 mapCountriesByName.put(dbc.name!!, c)
                 mapCountriesByGeoId.put(dbc.geoId!!, c)
             }
@@ -271,7 +279,7 @@ class DataManager {
                         val numCases:Int = if (row[i] == "") 0 else row[i].toInt()
                         daylies.add(DailyCovid(c, d,
                             numCases,
-                            /*TODO*/ceil(numCases * .01).toInt()))
+                            /*Make up deaths*/ceil(numCases * .01).toInt()))
                     }
                 }
                 dailyCovidsByDate.put(d, daylies)

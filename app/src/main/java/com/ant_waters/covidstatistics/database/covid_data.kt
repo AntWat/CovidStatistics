@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity
 data class covid_data(
     @PrimaryKey val id: Int,
-    @ColumnInfo(name = "dateRep") val dateRep: String?,     // TODO: date?
+    @ColumnInfo(name = "dateRep") val dateRep: String?,
     @ColumnInfo(name = "geoId") val geoId: String?,
     @ColumnInfo(name = "cases") val cases: Int?,
     @ColumnInfo(name = "deaths") val deaths: Int?,

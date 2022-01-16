@@ -21,11 +21,14 @@ import androidx.paging.PagingSource
 import com.ant_waters.covidstatistics.MainViewModel
 import com.ant_waters.covidstatistics.R
 import com.ant_waters.covidstatistics.Utils.SimpleTable2
+import com.ant_waters.covidstatistics.database.country
 import com.ant_waters.covidstatistics.databinding.FragmentDataTableBinding
 import com.ant_waters.covidstatistics.enDataLoaded
+import com.ant_waters.covidstatistics.model.Country2
 import com.ant_waters.covidstatistics.model.DataManager
 import com.ant_waters.covidstatistics.ui.HorizontalScrollViewListener
 import com.ant_waters.covidstatistics.ui.ObservableHorizontalScrollView
+import com.ant_waters.covidstatistics.ui.country_pop_up.CountryPopupFragment
 import com.ant_waters.covidstatistics.ui.display__options.DisplayOptions
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -192,6 +195,7 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
         actionBar?.title = label
         actionBar?.subtitle = "worst ${numCountriesToInclude} countries"
 
+        // Note that the way this is used assumes that the table headers match the country names.  This is a weakness.
         val includeColumns = mutableListOf<String>()
         for (p in 1..numCountriesToInclude) {
             includeColumns.add(ranking[p-1].first.name)
@@ -293,7 +297,7 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
                 cIndex = sc+1
                 val c = columnMap[cIndex]
                 allCells[r+1][cIndex] = createDataCellFromTemplate<Tval>(inflater,
-                                            dataTable.Rows[r].second[c!!-1], (sc == worstCol))
+                                            dataTable.Rows[r].second[c!!-1], (sc == worstCol), dataTable.Headers[c])
                 setContentBg(allCells[r+1][cIndex] as View)
                 row.addView(allCells[r+1][cIndex])
             }
@@ -354,7 +358,8 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
     }
 
     fun <Tval>createDataCellFromTemplate(inflater: LayoutInflater, theVal: Tval,
-                                         showWarning: Boolean): View {
+                                         showWarning: Boolean, countryName: String
+    ): View {
         var templateId = com.ant_waters.covidstatistics.R.layout.data_cell
 
         var text = theVal.toString()
@@ -369,6 +374,21 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
 
         val tv = cellView.findViewById<View>(com.ant_waters.covidstatistics.R.id.cell_text_view) as TextView
         tv.text = text
+
+
+        if (DataManager.CountriesByName.containsKey(countryName)) {
+            cellView.setOnClickListener(View.OnClickListener {
+                val cpf = CountryPopupFragment()
+
+                // Supply country as an argument.
+                val args = Bundle()
+
+                args.putString("geoId", DataManager.CountriesByName[countryName]!!.geoId)
+                cpf.setArguments(args)
+
+                cpf.show(requireActivity()?.getSupportFragmentManager(), "countrypopup_from_datatable")
+            })
+        }
 
         return cellView
     }

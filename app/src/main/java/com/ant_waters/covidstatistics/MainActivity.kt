@@ -23,15 +23,11 @@ import com.ant_waters.covidstatistics.ui.display__options.DisplayOptionsFragment
 import com.ant_waters.covidstatistics.ui.display__options.JunkDialogFragment
 
 /* TODO Items
-* ) Add options for country list and data table, 4 statistics, filters etc.
 * ) Database CRUD
+* ) Settings, About, slideshow, floating button on home page
 * ) Check, and apply, Android/Kotlin standard for capitization of variables, methods, classes, layouts etc.
 * ) Tidy up, sanitise, release as Kotlin demo, announce online.
 *) Search TODO items
-*
-*         * ) Add warning icon to data table
-*         * ) Add popup to display country data:
-*        *   - name, flag, Continent, Population, 4 statistics for 2020
 *  */
 
 

@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -94,20 +95,20 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle item selection
         return when (item.itemId) {
-            R.id.action_settings -> {
-                val jdf = JunkDialogFragment()
-
-                jdf.show(this.supportFragmentManager, "JunkDialogFragment")
-                true
-            }
+//            R.id.action_settings -> {
+//                val jdf = JunkDialogFragment()
+//
+//                jdf.show(this.supportFragmentManager, "JunkDialogFragment")
+//                true
+//            }
             R.id.display_options -> {
                 showDisplayOptions()
                 true
             }
             R.id.about -> {
-                //showHelp()
-                Toast.makeText(getApplicationContext(),
-                    "Number of CountryAggregates: ${DataManager?.CountryAggregates?.Aggregates?.size?:0}",Toast.LENGTH_SHORT).show();
+                showAbout()
+//                Toast.makeText(getApplicationContext(),
+//                    "Number of CountryAggregates: ${DataManager?.CountryAggregates?.Aggregates?.size?:0}",Toast.LENGTH_SHORT).show();
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -121,4 +122,53 @@ class MainActivity : AppCompatActivity() {
 
         dof.show(this.supportFragmentManager, "displayoptions")
     }
+
+    fun showAbout()
+    {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("About CovidStatistics")
+        var msg = "Author: Ant Waters\n"
+        msg += "GitHub: https://github.com/AntWat/CovidStatistics\n\n"
+        msg += "CovidStatistics is an Android Kotlin demonstration project\n"
+        msg += "It includes the following features:\n"
+        msg += "   *) Use of an SqLite database, using the 'Room' architecture.\n"
+        msg += "      The database contains real COVID-19 data for the year 2020, downloaded from:\n"
+        msg += "      https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide\n"
+        msg += "   *) Use of the 'Navigation Drawer Activity' Android project template.\n"
+        msg += "   *) TODO: Database CUD.\n"
+        msg += "   *) Dislay of list data inluding icons (country flags), using a Recycler View.\n"
+        msg += "   *) Display of tabular data, including grid lines.\n"
+        msg += "      The cells are defined using a custom layout, so any data and graphics can potentially be displayed.\n"
+        msg += "      Random icons are included with the text as an example.\n"
+        msg += "      The table has fixed row headers and column headers, and can be scrolled in both directions.\n"
+        msg += "   *) Popup view of total data for a selected country.\n"
+        msg += "   *) Use of a custom Alert dialog to input DisplayOptions.\n"
+        msg += "      This uses the UI elements: Radio buttons, lists, switch, buttons, Data Picker and Text Edit.\n"
+        msg += "   *) Use of a Standard Alert dialog (this).\n"
+        msg += "   *) Use of a ViewModel to preserve display when the screen is rotated.\n"
+        msg += "   *) Observation of LiveData to update the display when data or display options change.\n"
+        msg += "   *) General coding in Kotlin, including generics.\n"
+        msg += "   *) TODO: Database CUD.\n"
+
+        builder.setMessage(msg)
+//builder.setPositiveButton("OK", DialogInterface.OnClickListener(function = x))
+
+        builder.setPositiveButton(android.R.string.yes) { dialog, which ->
+            Toast.makeText(applicationContext,
+                android.R.string.yes, Toast.LENGTH_SHORT).show()
+        }
+
+        builder.setNegativeButton(android.R.string.no) { dialog, which ->
+            Toast.makeText(applicationContext,
+                android.R.string.no, Toast.LENGTH_SHORT).show()
+        }
+
+        builder.setNeutralButton("Maybe") { dialog, which ->
+            Toast.makeText(applicationContext,
+                "Maybe", Toast.LENGTH_SHORT).show()
+        }
+        builder.show()
+
+    }
+
 }

@@ -17,8 +17,8 @@ import java.util.*
 
 // TODO:
 // *) Still not showing correctly, hacky use of margins required
-// *) Cancel button is 2 lines on my phone
-// *) setDate
+
+val cJAVA_YEAR_OFFSET = 1900
 
 class DisplayOptionsFragment() : DialogFragment()  {
 
@@ -188,14 +188,14 @@ class DisplayOptionsFragment() : DialogFragment()  {
     {
         val useDate: (Int, Int, Int)->Unit = fun(year, month, day)
         {
-            val newDate: Date = Date(year, month, day)
+            val newDate: Date = Date(year-cJAVA_YEAR_OFFSET, month, day)
             btn.text = (SimpleDateFormat(datePattern).format(newDate))
         }
 
-        val newFragment = DisplayOptionsDatePickerFragment(useDate)
-        newFragment.show(requireActivity()?.getSupportFragmentManager(), "DisplayOptionsDatePicker")
+        val dt:Date = SimpleDateFormat(datePattern).parse(btn.text!!.toString())
 
-        // TODO Next:
+        val newFragment = DisplayOptionsDatePickerFragment(dt, useDate)
+        newFragment.show(requireActivity()?.getSupportFragmentManager(), "DisplayOptionsDatePicker")
     }
     fun btnOk_Click()
     {
@@ -220,15 +220,14 @@ class DisplayOptionsFragment() : DialogFragment()  {
 
 }
 
-class DisplayOptionsDatePickerFragment(val useDate: (year: Int, month: Int, day: Int)->Unit) : DialogFragment(), DatePickerDialog.OnDateSetListener {
+class DisplayOptionsDatePickerFragment(val dt:Date, val useDate: (year: Int, month: Int, day: Int)->Unit) : DialogFragment(), DatePickerDialog.OnDateSetListener {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog
     {
         // Use the current date as the default date in the picker
-        val c = Calendar.getInstance()
-        val year = c.get(Calendar.YEAR)
-        val month = c.get(Calendar.MONTH)
-        val day = c.get(Calendar.DAY_OF_MONTH)
+        val year = dt.year + cJAVA_YEAR_OFFSET;
+        val month = dt.month
+        val day = dt.date
 
         // Create a new instance of DatePickerDialog and return it
         return DatePickerDialog(requireActivity(), this, year, month, day)

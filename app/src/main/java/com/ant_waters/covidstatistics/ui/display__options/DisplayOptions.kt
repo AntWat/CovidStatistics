@@ -3,7 +3,7 @@ package com.ant_waters.covidstatistics.ui.display__options
 import java.util.*
 
 public class DisplayOptions (
-    var startDate: Date = Date(0), var endDate: Date = Date(0),
+    var startDate: Date = Date(0), var endDate: Date = Date(),
     var listStatisticsFormat: enStatisticsFormat = enStatisticsFormat.Proportional,
     var listSortBy: enSortBy = enSortBy.CountryName,
     var listReverseSort: Boolean = false,

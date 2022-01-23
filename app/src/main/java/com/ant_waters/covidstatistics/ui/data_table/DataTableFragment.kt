@@ -201,8 +201,8 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
             includeColumns.add(ranking[p-1].first.name)
         }
 
-        val startDate = Date("04/01/2020")
-        val endDate = Date("08/31/2020")
+        val startDate = MainViewModel.DisplayOptions.startDate
+        val endDate = MainViewModel.DisplayOptions.endDate
         val rowTestFun: (Date)->Boolean = { d -> ((d >= startDate) && (d <= endDate))}
 
         // ------------ Display

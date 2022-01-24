@@ -2,7 +2,9 @@ package com.ant_waters.covidstatistics.model
 
 import java.util.*
 
-// Aggregated (summed) data for each country, over a date range
+/**
+ * Aggregated (summed) data for each country, over a date range
+ */
 class CountryAggregates {
     lateinit var DateStart: Date
     lateinit var DateEnd: Date
@@ -51,7 +53,7 @@ class CountryAggregates {
             )
         }
 
-    fun SetData(dateStart: Date, dateEnd: Date,
+    fun setData(dateStart: Date, dateEnd: Date,
                 dailyCovidsByDate: List<Pair<Date, MutableList<DailyCovid>>>) {
         DateStart = dateStart
         DateEnd = dateEnd
@@ -59,7 +61,7 @@ class CountryAggregates {
         var countryCasesTotals = mutableMapOf<Country2, Int>()
         var countryDeathsTotals = mutableMapOf<Country2, Int>()
 
-        CalculateTotals(
+        calculateTotals(
             dailyCovidsByDate,
             dateStart,
             dateEnd,
@@ -75,7 +77,7 @@ class CountryAggregates {
         }
     }
 
-    private fun CalculateTotals(
+    private fun calculateTotals(
         dailyCovidsByDate: List<Pair<Date, MutableList<DailyCovid>>>,
         dateStart: Date,
         dateEnd: Date,

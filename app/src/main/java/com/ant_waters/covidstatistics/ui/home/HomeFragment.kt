@@ -14,15 +14,15 @@ import com.ant_waters.covidstatistics.databinding.FragmentHomeBinding
 import com.ant_waters.covidstatistics.enDataLoaded
 import com.ant_waters.covidstatistics.model.DataManager
 
-// Code for the fragment for the home page
+/**
+ * Code for the fragment for the home page
+ */
 class HomeFragment : Fragment() {
 
-    //private lateinit var homeViewModel: HomeViewModel
     private val homeViewModel: HomeViewModel by viewModels()
     private var _binding: FragmentHomeBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(

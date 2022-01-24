@@ -49,7 +49,7 @@ class SimpleTable2<TRowHdr, Tval>() {
 
 // -----------------------------------
 
-fun DaysDiff(dEnd: Date, dStart:Date):Long {
+fun daysDiff(dEnd: Date, dStart:Date):Long {
     val dayInMilliSecs:Long = 24*60*60*1000
     val diffInMillies: Long = Math.abs(dEnd.getTime() - dStart!!.getTime())
     val diffInDays = diffInMillies/dayInMilliSecs

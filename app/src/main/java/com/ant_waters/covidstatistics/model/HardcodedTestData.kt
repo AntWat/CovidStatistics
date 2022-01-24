@@ -2,7 +2,9 @@ package com.ant_waters.covidstatistics.model
 
 import java.util.*
 
-// Hard coded test data, not used anymore
+/**
+ * Hard coded test data, not used anymore
+  */
 class HardcodedTestData {
 }
 

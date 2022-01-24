@@ -43,9 +43,9 @@ class HomeItemAdapter(private val context: Fragment,
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         if (MainViewModel.DataInitialised.value == enDataLoaded.CountriesOnly)
-            DisplayCountry(holder, position)
+            displayCountry(holder, position)
         else  if (MainViewModel.DataInitialised.value==enDataLoaded.All)
-            DisplayCountryAndData(holder, position)
+            displayCountryAndData(holder, position)
 
         holder.itemView.setOnClickListener(View.OnClickListener {
             val cpf = CountryPopupFragment()
@@ -60,7 +60,7 @@ class HomeItemAdapter(private val context: Fragment,
         })
     }
 
-    fun DisplayCountry(holder: ItemViewHolder, position: Int) {
+    fun displayCountry(holder: ItemViewHolder, position: Int) {
         if (countries == null) { return }
 
         val c = countries[position]
@@ -76,7 +76,7 @@ class HomeItemAdapter(private val context: Fragment,
         holder.flagView.setImageResource(resourceId)
     }
 
-    fun DisplayCountryAndData(holder: ItemViewHolder, position: Int) {
+    fun displayCountryAndData(holder: ItemViewHolder, position: Int) {
         if (countryAggregates == null) { return }
 
         var aggList = countryAggregates.SortedByCountry

@@ -3,7 +3,7 @@ package com.ant_waters.covidstatistics.model
 import android.content.Context
 import android.util.Log
 import com.ant_waters.covidstatistics.MainViewModel
-import com.ant_waters.covidstatistics.Utils.DaysDiff
+import com.ant_waters.covidstatistics.Utils.daysDiff
 import com.ant_waters.covidstatistics.Utils.SimpleTable2
 import java.util.*
 import com.ant_waters.covidstatistics.Utils.readCsv
@@ -16,7 +16,9 @@ import java.text.SimpleDateFormat
 import kotlin.math.ceil
 import com.ant_waters.covidstatistics.enDataLoaded
 
-// The main class for reading from the database and storing references to the data classes
+/**
+ * The main class for reading from the database and storing references to the data classes
+ */
 class DataManager {
     companion object {
         lateinit var DateStart: Date
@@ -30,7 +32,6 @@ class DataManager {
             get() {
                 return _countriesByName.toMap()
             }
-
 
         private var _dailyCovidsByDate = listOf<Pair<Date, MutableList<DailyCovid>>>()
         val DailyCovidsByDate get() = this._dailyCovidsByDate
@@ -59,19 +60,17 @@ class DataManager {
         val MinPopulationForRanking = 1000000
     }
 
-
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-    suspend fun LoadData(context: Context, onDataLoaded:(enDataLoaded)->Unit): Boolean {
+    suspend fun loadData(context: Context, onDataLoaded:(enDataLoaded)->Unit): Boolean {
         return withContext(Dispatchers.IO)
-        {LoadDataFromDatabase(context, onDataLoaded)}
+        {loadDataFromDatabase(context, onDataLoaded)}
         //return LoadDataFromCsv(context)
     }
 
-
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-    private fun LoadDataFromDatabase(context: Context, onDataLoaded:(enDataLoaded)->Unit): Boolean {
+    private fun loadDataFromDatabase(context: Context, onDataLoaded:(enDataLoaded)->Unit): Boolean {
         Log.i(MainViewModel.LOG_TAG, "LoadDataFromDatabase: Started")
 
         try {
@@ -125,7 +124,7 @@ class DataManager {
 
                     var diffInDays:Long = AggregationPeriodInDays.toLong()+1
                     if (aggregatedDate != null) {
-                        diffInDays = DaysDiff(d, aggregatedDate)
+                        diffInDays = daysDiff(d, aggregatedDate)
                     }
 
                     if (diffInDays>=AggregationPeriodInDays) {
@@ -183,6 +182,7 @@ class DataManager {
                 }
             }
 
+            // ---------------------------
             DateStart = dateStart!!
             DateEnd = dateEnd!!
             _dailyCovidsByDate  = dailyCovidsByDate.toList()
@@ -213,7 +213,7 @@ class DataManager {
 
             // ---------------------------
             Log.i(MainViewModel.LOG_TAG, "Creating aggregates")
-            _countryAggregates.SetData(DateStart, DateEnd, _dailyCovidsByDate)
+            _countryAggregates.setData(DateStart, DateEnd, _dailyCovidsByDate)
 
             // ---------------------------
             Log.i(MainViewModel.LOG_TAG, "LoadDataFromDatabase: Finished")
@@ -239,7 +239,7 @@ class DataManager {
 
             _dailyCovidsByDate = LoadCasesFromCsvButMakeUpDeaths(context, countries).toList()
 
-            _countryAggregates.SetData(DateStart, DateEnd, _dailyCovidsByDate)
+            _countryAggregates.setData(DateStart, DateEnd, _dailyCovidsByDate)
             return true
         } catch (ex: Exception) {
             // TODO: Errorhandling or logging

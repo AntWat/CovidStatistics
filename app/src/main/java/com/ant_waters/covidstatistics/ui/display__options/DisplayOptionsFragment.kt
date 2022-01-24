@@ -197,6 +197,7 @@ class DisplayOptionsFragment() : DialogFragment()  {
         val newFragment = DisplayOptionsDatePickerFragment(dt, useDate)
         newFragment.show(requireActivity()?.getSupportFragmentManager(), "DisplayOptionsDatePicker")
     }
+
     fun btnOk_Click()
     {
         val errMsg = readDisplayOptions()
@@ -204,7 +205,7 @@ class DisplayOptionsFragment() : DialogFragment()  {
             Toast.makeText(getActivity()?.getApplicationContext(),
                 "Error! ${errMsg}",Toast.LENGTH_SHORT).show();      // TODO: Red text
         } else {
-            MainViewModel.UpdateDisplayOptionsChanged()
+            MainViewModel.updateDisplayOptionsChanged()
             getDialog()?.dismiss()
         }
     }
@@ -214,7 +215,7 @@ class DisplayOptionsFragment() : DialogFragment()  {
     }
     fun btnResetAll_Click()
     {
-        _displayOptions.ResetAll()
+        _displayOptions.resetAll()
         showDisplayOptions()
     }
 

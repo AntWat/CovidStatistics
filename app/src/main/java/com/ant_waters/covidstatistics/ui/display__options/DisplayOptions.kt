@@ -14,13 +14,13 @@ public class DisplayOptions (
     public enum class enSortBy { CountryName, ProportionalCases, ProportionalDeaths, TotalCases, TotalDeaths }
     public enum class enTableValueType { ProportionalCases, ProportionalDeaths, TotalCases, TotalDeaths }
 
-    public fun ResetAll()
+    public fun resetAll()
     {
         val newDisplayOptions = DisplayOptions()
-        CopyValuesFrom(newDisplayOptions)
+        copyValuesFrom(newDisplayOptions)
     }
 
-    public fun CopyValuesFrom(source: DisplayOptions)
+    public fun copyValuesFrom(source: DisplayOptions)
     {
         startDate = source.startDate
         endDate = source.endDate

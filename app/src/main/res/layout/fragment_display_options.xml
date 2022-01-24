@@ -32,6 +32,7 @@
 
 
             <!-- +++++++++++  Options that apply to both home view list and the data table -->
+<!--            None at present-->
 
             <!-- +++++++++++  Options that only apply to the home view list -->
 <!--            <View-->
@@ -176,7 +177,7 @@
                     android:text="01/Jan/2020..." />
 
                 <!--Note: I expected to use an EditText with android:inputType="date", but it didn't -->
-                <!--seem to add any value.  In particular, it doeswn't show a date picker when you click it-->
+                <!--seem to add any value.  In particular, it doesn't show a date picker when you click it-->
                 <!--    <EditText-->
                 <!--        android:id="@+id/date_start"-->
                 <!--        android:layout_width="wrap_content"-->
@@ -204,8 +205,6 @@
                     android:text="31/Dec/2020..." />
 
             </GridLayout>
-
-
 
             <GridLayout
                 android:layout_width="wrap_content"

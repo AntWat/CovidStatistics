@@ -17,14 +17,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.paging.PagingSource
 import com.ant_waters.covidstatistics.MainViewModel
-import com.ant_waters.covidstatistics.R
 import com.ant_waters.covidstatistics.Utils.SimpleTable2
-import com.ant_waters.covidstatistics.database.country
 import com.ant_waters.covidstatistics.databinding.FragmentDataTableBinding
 import com.ant_waters.covidstatistics.enDataLoaded
-import com.ant_waters.covidstatistics.model.Country2
 import com.ant_waters.covidstatistics.model.DataManager
 import com.ant_waters.covidstatistics.ui.HorizontalScrollViewListener
 import com.ant_waters.covidstatistics.ui.ObservableHorizontalScrollView
@@ -34,12 +30,14 @@ import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-// The starting point for this code came from: https://stackoverflow.com/questions/7119231/android-layout-how-to-implement-a-fixed-freezed-header-and-column
-// and other sources:
-
-// See also: https://stackoverflow.com/questions/3948934/synchronise-scrollview-scroll-positions-android
-
-// Code for the fragment that displays a data table
+/**
+ * Code for the fragment that displays a data table
+ *
+ * The starting point for this code came from:
+ * https://stackoverflow.com/questions/7119231/android-layout-how-to-implement-a-fixed-freezed-header-and-column
+ * and other sources.
+ * See also: https://stackoverflow.com/questions/3948934/synchronise-scrollview-scroll-positions-android
+ */
 class DataTableFragment : Fragment(), HorizontalScrollViewListener {
 
     private var _context: Context? = null
@@ -59,8 +57,7 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
     private lateinit var dataTableViewModel: DataTableViewModel
     private var _binding: FragmentDataTableBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -84,13 +81,13 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
 
         MainViewModel.DisplayOptionsChanged.observe(viewLifecycleOwner, Observer {
             Log.i(MainViewModel.LOG_TAG, "Observer: DataTableFragment, Globals.DisplayOptionsChanged: Started")
-            RefreshTheDataTable(inflater)   // Note that this get's called on first load also
+            refreshTheDataTable(inflater)   // Note that this get's called on first load also
         })
 
         return root
     }
 
-    fun RefreshTheDataTable(inflater: LayoutInflater)
+    fun refreshTheDataTable(inflater: LayoutInflater)
     {
         binding.progressBar1.setVisibility(View.VISIBLE)    // This doesn't work because the view is not visible till we finish this routine
 
@@ -190,7 +187,6 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
 
         // ------------ Decide which countries to display
         val numCountriesToInclude = 10      // Top ten!
-        //label += ", worst ${numCountriesToInclude} countries"
         val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
         actionBar?.title = label
         actionBar?.subtitle = "worst ${numCountriesToInclude} countries"

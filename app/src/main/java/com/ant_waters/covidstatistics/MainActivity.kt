@@ -1,6 +1,5 @@
 package com.ant_waters.covidstatistics
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -17,11 +16,8 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.viewModels
 import com.ant_waters.covidstatistics.databinding.ActivityMainBinding
-import com.ant_waters.covidstatistics.model.DataManager
 import com.ant_waters.covidstatistics.ui.display__options.DisplayOptionsFragment
-import com.ant_waters.covidstatistics.ui.display__options.JunkDialogFragment
 import android.text.util.Linkify
 
 import android.widget.TextView
@@ -29,11 +25,10 @@ import android.widget.TextView
 /* TODO Items
 * ) Database CRUD
 * ) floating button on home page
-* ) Check, and apply, Android/Kotlin standard for capitalization of variables, methods, classes, layouts etc.
+* ) Offload strings to resources
 * ) Tidy up, sanitise, release as Kotlin demo, announce online.
 *) Search TODO items
 *  */
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -75,11 +70,10 @@ class MainActivity : AppCompatActivity() {
         config()
     }
 
-    private fun config()
-    {
+    private fun config() {
         Log.i(MainViewModel.LOG_TAG, "config: Starting")
 
-        mainViewModel.Init(this)
+        mainViewModel.init(this)
 
         Log.i(MainViewModel.LOG_TAG, "config: Finished")
     }
@@ -99,10 +93,6 @@ class MainActivity : AppCompatActivity() {
         // Handle item selection
         return when (item.itemId) {
 //            R.id.action_settings -> {
-//                val jdf = JunkDialogFragment()
-//
-//                jdf.show(this.supportFragmentManager, "JunkDialogFragment")
-//                true
 //            }
             R.id.display_options -> {
                 showDisplayOptions()
@@ -110,8 +100,6 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.about -> {
                 showAbout()
-//                Toast.makeText(getApplicationContext(),
-//                    "Number of CountryAggregates: ${DataManager?.CountryAggregates?.Aggregates?.size?:0}",Toast.LENGTH_SHORT).show();
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -139,13 +127,15 @@ class MainActivity : AppCompatActivity() {
         msg += "      https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide\n"
         msg += "   *) Use of the 'Navigation Drawer Activity' Android project template.\n"
         msg += "   *) TODO: Database CUD.\n"
-        msg += "   *) Dislay of list data including icons (country flags), using a Recycler View.\n"
-        msg += "   *) Early display of partial data (just countries, without statistics)"
+        msg += "   *) Display of list data including icons (country flags), using a Recycler View.\n"
+        msg += "   *) Early display of partial data (just countries, without statistics)\n"
         msg += "   *) Showing a progress spinner while data is loading.\n"
+        msg += "      Use of coroutines (multi-threading) to load data.\n"
         msg += "   *) Display of tabular data, including grid lines.\n"
         msg += "      The cells are defined using a custom layout, so any data and graphics can potentially be displayed.\n"
         msg += "      Random icons are included with the text as an example.\n"
         msg += "      The table has fixed row headers and column headers, and can be scrolled in both directions.\n"
+        msg += "      The column widths are adjusted dynamically.\n"
         msg += "   *) Popup view of total data for a selected country.\n"
         msg += "   *) Use of a custom Alert dialog to select DisplayOptions, on a scrollable screen.\n"
         msg += "      This uses the UI elements: Radio buttons, lists, switch, buttons, Data Picker and Text Edit.\n"
@@ -153,6 +143,9 @@ class MainActivity : AppCompatActivity() {
         msg += "   *) Use of a ViewModel to preserve display when the screen is rotated.\n"
         msg += "   *) Observation of LiveData to update the display when data or display options change.\n"
         msg += "   *) General coding in Kotlin, including generics.\n"
+        msg += "\n"
+        msg += "Please note that this code does not follow all the Kotlin style guides, which can be found at:\n"
+        msg += "https://developer.android.com/kotlin/style-guide\n"
 
         builder.setMessage(msg)
 

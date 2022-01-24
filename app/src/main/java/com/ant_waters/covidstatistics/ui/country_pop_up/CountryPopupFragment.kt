@@ -14,7 +14,9 @@ import com.ant_waters.covidstatistics.R
 import com.ant_waters.covidstatistics.model.DataManager
 import java.text.DecimalFormat
 
-// Code for the fragment for the popup when you touch a country on the home page
+/**
+ * Code for the fragment for the popup when you touch a country on the home page
+ */
 class CountryPopupFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

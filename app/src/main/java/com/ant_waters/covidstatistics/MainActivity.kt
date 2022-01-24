@@ -22,10 +22,13 @@ import com.ant_waters.covidstatistics.databinding.ActivityMainBinding
 import com.ant_waters.covidstatistics.model.DataManager
 import com.ant_waters.covidstatistics.ui.display__options.DisplayOptionsFragment
 import com.ant_waters.covidstatistics.ui.display__options.JunkDialogFragment
+import android.text.util.Linkify
+
+import android.widget.TextView
 
 /* TODO Items
 * ) Database CRUD
-* ) Settings, About, slideshow, floating button on home page
+* ) floating button on home page
 * ) Check, and apply, Android/Kotlin standard for capitalization of variables, methods, classes, layouts etc.
 * ) Tidy up, sanitise, release as Kotlin demo, announce online.
 *) Search TODO items
@@ -63,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_data_table, R.id.nav_slideshow
+                R.id.nav_home, R.id.nav_data_table      //, R.id.nav_slideshow
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -129,46 +132,48 @@ class MainActivity : AppCompatActivity() {
         builder.setTitle("About CovidStatistics")
         var msg = "Author: Ant Waters\n"
         msg += "GitHub: https://github.com/AntWat/CovidStatistics\n\n"
-        msg += "CovidStatistics is an Android Kotlin demonstration project\n"
+        msg += "CovidStatistics is an Android Kotlin demonstration project.\n"
         msg += "It includes the following features:\n"
         msg += "   *) Use of an SqLite database, using the 'Room' architecture.\n"
         msg += "      The database contains real COVID-19 data for the year 2020, downloaded from:\n"
         msg += "      https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide\n"
         msg += "   *) Use of the 'Navigation Drawer Activity' Android project template.\n"
         msg += "   *) TODO: Database CUD.\n"
-        msg += "   *) Dislay of list data inluding icons (country flags), using a Recycler View.\n"
+        msg += "   *) Dislay of list data including icons (country flags), using a Recycler View.\n"
+        msg += "   *) Early display of partial data (just countries, without statistics)"
+        msg += "   *) Showing a progress spinner while data is loading.\n"
         msg += "   *) Display of tabular data, including grid lines.\n"
         msg += "      The cells are defined using a custom layout, so any data and graphics can potentially be displayed.\n"
         msg += "      Random icons are included with the text as an example.\n"
         msg += "      The table has fixed row headers and column headers, and can be scrolled in both directions.\n"
         msg += "   *) Popup view of total data for a selected country.\n"
-        msg += "   *) Use of a custom Alert dialog to input DisplayOptions.\n"
+        msg += "   *) Use of a custom Alert dialog to select DisplayOptions, on a scrollable screen.\n"
         msg += "      This uses the UI elements: Radio buttons, lists, switch, buttons, Data Picker and Text Edit.\n"
-        msg += "   *) Use of a Standard Alert dialog (this).\n"
+        msg += "   *) Use of a Standard Alert dialog (this), including hyperlinks.\n"
         msg += "   *) Use of a ViewModel to preserve display when the screen is rotated.\n"
         msg += "   *) Observation of LiveData to update the display when data or display options change.\n"
         msg += "   *) General coding in Kotlin, including generics.\n"
-        msg += "   *) TODO: Database CUD.\n"
 
         builder.setMessage(msg)
-//builder.setPositiveButton("OK", DialogInterface.OnClickListener(function = x))
 
         builder.setPositiveButton(android.R.string.yes) { dialog, which ->
             Toast.makeText(applicationContext,
                 android.R.string.yes, Toast.LENGTH_SHORT).show()
         }
 
-        builder.setNegativeButton(android.R.string.no) { dialog, which ->
-            Toast.makeText(applicationContext,
-                android.R.string.no, Toast.LENGTH_SHORT).show()
-        }
+//        builder.setNegativeButton(android.R.string.no) { dialog, which ->
+//            Toast.makeText(applicationContext,
+//                android.R.string.no, Toast.LENGTH_SHORT).show()
+//        }
+//
+//        builder.setNeutralButton("Maybe") { dialog, which ->
+//            Toast.makeText(applicationContext,
+//                "Maybe", Toast.LENGTH_SHORT).show()
+//        }
 
-        builder.setNeutralButton("Maybe") { dialog, which ->
-            Toast.makeText(applicationContext,
-                "Maybe", Toast.LENGTH_SHORT).show()
-        }
-        builder.show()
-
+        var dlg = builder.create()
+        dlg.show()
+        Linkify.addLinks((dlg.findViewById(android.R.id.message) as TextView?)!!, Linkify.ALL)
     }
 
 }

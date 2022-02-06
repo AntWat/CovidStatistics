@@ -33,10 +33,16 @@ class DataManager {
                 return _countriesByName.toMap()
             }
 
+        public fun AddCountry(c : Country2) {
+            _countries.add(c)
+            _countriesByName.put(c.name, c)
+            _countryAggregates.AddCountry(c)
+        }
+
         private var _dailyCovidsByDate = listOf<Pair<Date, MutableList<DailyCovid>>>()
         val DailyCovidsByDate get() = this._dailyCovidsByDate
 
-        private var _countryAggregates: CountryAggregates = CountryAggregates()
+        private var _countryAggregates : CountryAggregates = CountryAggregates()
         val CountryAggregates get() = this._countryAggregates
 
         val PopulationScaler = 100000      // cases are usually reported per 100k of population

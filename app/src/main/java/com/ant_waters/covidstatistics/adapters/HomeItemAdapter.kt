@@ -31,6 +31,8 @@ class HomeItemAdapter(private val context: Fragment,
         val flagView: ImageView = view.findViewById(R.id.item_flag)
     }
 
+    var sortedAggregates : List<Pair<Country2, CountryAggregate>>? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         Log.i(MainViewModel.LOG_TAG, "HomeDataItemAdapter.onCreateViewHolder: Started")
 
@@ -52,7 +54,8 @@ class HomeItemAdapter(private val context: Fragment,
 
             // Supply country as an argument.
             val args = Bundle()
-            val c = countries[position]
+            val agg = sortedAggregates!![position]
+            val c = agg.first
             args.putString("geoId", c.geoId)
             cpf.setArguments(args)
 
@@ -79,18 +82,18 @@ class HomeItemAdapter(private val context: Fragment,
     fun displayCountryAndData(holder: ItemViewHolder, position: Int) {
         if (countryAggregates == null) { return }
 
-        var aggList = countryAggregates.SortedByCountry
+        sortedAggregates = countryAggregates.SortedByCountry
         when (MainViewModel.DisplayOptions.listSortBy) {
-            DisplayOptions.enSortBy.TotalDeaths -> { aggList = countryAggregates.SortedByTotalDeaths };
-            DisplayOptions.enSortBy.ProportionalDeaths -> { aggList = countryAggregates.SortedByProportionalDeaths };
-            DisplayOptions.enSortBy.TotalCases -> { aggList = countryAggregates.SortedByTotalCases };
-            DisplayOptions.enSortBy.ProportionalCases -> { aggList = countryAggregates.SortedByProportionalCases };
+                DisplayOptions.enSortBy.TotalDeaths -> { sortedAggregates = countryAggregates.SortedByTotalDeaths };
+            DisplayOptions.enSortBy.ProportionalDeaths -> { sortedAggregates = countryAggregates.SortedByProportionalDeaths };
+            DisplayOptions.enSortBy.TotalCases -> { sortedAggregates = countryAggregates.SortedByTotalCases };
+            DisplayOptions.enSortBy.ProportionalCases -> { sortedAggregates = countryAggregates.SortedByProportionalCases };
         }
 
         var index = position
-        if (MainViewModel.DisplayOptions.listReverseSort) {index = aggList.size - position - 1}
+        if (MainViewModel.DisplayOptions.listReverseSort) {index = sortedAggregates!!.size - position - 1}
 
-        val kvp = aggList[index]
+        val kvp = sortedAggregates!![index]
         holder.countryView.text = kvp.first.name
         val agg: CountryAggregate = kvp.second
         val df1 = DecimalFormat("#")

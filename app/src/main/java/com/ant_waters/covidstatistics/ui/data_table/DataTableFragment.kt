@@ -128,8 +128,10 @@ class DataTableFragment : Fragment(), HorizontalScrollViewListener {
     fun displayTheDataTable(inflater: LayoutInflater)
     {
         if (MainViewModel.DataInitialised.value==enDataLoaded.All) {
+            // Display the table by creating Views for cells, headers etc.
             val allCells = displayDataTable(inflater)
 
+            // Add a callback to set the column widths at the end (when onGlobalLayout is called)
             val content: View = _binding!!.mainArea
             content.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
                 override fun onGlobalLayout() {

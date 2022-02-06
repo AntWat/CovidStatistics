@@ -9,11 +9,18 @@ class CountryAggregates {
     lateinit var DateStart: Date
     lateinit var DateEnd: Date
 
+    public fun AddCountry(c: Country2) {
+        val agg = CountryAggregate(c, DateStart, DateEnd, 0, 0)
+        Aggregates.add(Pair<Country2, CountryAggregate>(c, agg))
+    }
+
     var Aggregates = mutableListOf<Pair<Country2, CountryAggregate>>()
 
     val SortedByCountry: List<Pair<Country2, CountryAggregate>>
         get() {
-            return Aggregates.toList()
+            return Aggregates.sortedWith (
+                compareBy {it.first.name}
+            )
         }
 
     val SortedByProportionalCases: List<Pair<Country2, CountryAggregate>>

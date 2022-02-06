@@ -21,6 +21,11 @@ import com.ant_waters.covidstatistics.ui.display__options.DisplayOptionsFragment
 import android.text.util.Linkify
 
 import android.widget.TextView
+import androidx.room.ColumnInfo
+import com.ant_waters.covidstatistics.database.continent
+import com.ant_waters.covidstatistics.database.country
+import com.ant_waters.covidstatistics.model.Country2
+import com.ant_waters.covidstatistics.model.DataManager
 
 /* TODO Items
 * ) Database CRUD
@@ -92,8 +97,10 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle item selection
         return when (item.itemId) {
-//            R.id.action_settings -> {
-//            }
+            R.id.edit_countries -> {
+                editCountries()
+                true
+            }
             R.id.display_options -> {
                 showDisplayOptions()
                 true
@@ -112,6 +119,21 @@ class MainActivity : AppCompatActivity() {
         val dof = DisplayOptionsFragment()
 
         dof.show(this.supportFragmentManager, "displayoptions")
+    }
+
+    fun editCountries()
+    {
+        // TODO: Create a dummy country
+        val dbc = country(geoId="A1", country_territory_code = "AC1",
+            name = "AAA Ants Country1", continent = "Asia" )
+        val pop2019 = 1234567
+
+        // Update the model
+        val newC = Country2(dbc, pop2019)
+        DataManager.AddCountry(newC)
+
+        // Refresh the display
+        MainViewModel.updateDisplayOptionsChanged()
     }
 
     fun showAbout()

@@ -39,7 +39,7 @@ class CountryPopupFragment : DialogFragment() {
         for (c in DataManager.Countries) {
             if (c.geoId == geoId) {
                 sCountry = c.name
-                sContinent = "${c.countryCode}, ${c.geoId}, ${c.continent}"
+                sContinent = "${c.countryCode}, ${c.geoId}, ${c.continent!!.name}"
                 sPopulation = "Population: ${c.popData2019}"
                 break
             }

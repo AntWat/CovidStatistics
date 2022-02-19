@@ -24,6 +24,23 @@ class DataManager {
         lateinit var DateStart: Date
         lateinit var DateEnd: Date
 
+        private var _continents = mutableListOf<Continent2>()
+        val Continents get() = this._continents
+
+        val _continentsByName = mutableMapOf<String, Continent2>()
+        val ContinentsByName: Map<String, Continent2>
+            get() {
+                return _continentsByName.toMap()
+            }
+
+        public fun continentFromName(continentName: String) : Continent2? {
+            if ((continentName != null) && continentName != "") {
+                return DataManager.ContinentsByName[continentName]!!
+            }
+            return null
+        }
+
+
         private var _countries = mutableListOf<Country2>()
         val Countries get() = this._countries
 
@@ -37,6 +54,7 @@ class DataManager {
             _countries.add(c)
             _countriesByName.put(c.name, c)
             _countryAggregates.AddCountry(c)
+            _countries.sortBy { it.name }
         }
 
         private var _dailyCovidsByDate = listOf<Pair<Date, MutableList<DailyCovid>>>()
@@ -81,6 +99,15 @@ class DataManager {
 
         try {
             val covidDatabase = CovidDatabase.getDatabase(context)
+
+            // ---------------------------
+            val dbContinents = covidDatabase.continentDao().getAll()
+
+            for (dbcontinent in dbContinents) {
+                val continent = Continent2(dbcontinent)
+                _continents.add(continent)
+                _continentsByName.put(continent.name, continent)
+            }
 
             // ---------------------------
             Log.i(MainViewModel.LOG_TAG, "Loading countries")

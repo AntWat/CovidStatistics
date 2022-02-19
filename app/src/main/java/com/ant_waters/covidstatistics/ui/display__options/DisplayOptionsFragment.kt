@@ -2,8 +2,10 @@ package com.ant_waters.covidstatistics.ui.display__options
 
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -11,6 +13,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import com.ant_waters.covidstatistics.MainViewModel
 import com.ant_waters.covidstatistics.R
+import com.ant_waters.covidstatistics.Utils.Utils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.SimpleDateFormat
 import java.util.*
@@ -103,7 +106,7 @@ class DisplayOptionsFragment() : DialogFragment()  {
                 // Note: I am not using these because they always close the dialog when the button is pressed,
                 // so there is no way to validate the choices first.  I am using custom buttons instead.
 
-                //builder.setCanceledOnTouchOutside(false);     // This alos doesn't seem to work as expected!
+                //builder.setCanceledOnTouchOutside(false);     // This also doesn't seem to work as expected!
 
             return builder.create()
         }
@@ -202,8 +205,9 @@ class DisplayOptionsFragment() : DialogFragment()  {
     {
         val errMsg = readDisplayOptions()
         if (errMsg.length > 0) {
-            Toast.makeText(getActivity()?.getApplicationContext(),
-                "Error! ${errMsg}",Toast.LENGTH_SHORT).show();      // TODO: Red text
+            Utils.ShowToast(getActivity()?.getApplicationContext(),
+                "Error! ${errMsg}",
+                Toast.LENGTH_LONG, -1, Color.RED)
         } else {
             MainViewModel.updateDisplayOptionsChanged()
             getDialog()?.dismiss()

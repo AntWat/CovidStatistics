@@ -7,7 +7,9 @@ import com.ant_waters.covidstatistics.Utils.daysDiff
 import com.ant_waters.covidstatistics.Utils.SimpleTable2
 import java.util.*
 import com.ant_waters.covidstatistics.Utils.readCsv
+import com.ant_waters.covidstatistics.database.country
 import com.ant_waters.covidstatistics.database.country_data
+import com.ant_waters.covidstatistics.database.covid_data
 import com.ant_waters.dbroomtest.database.CovidDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -54,6 +56,12 @@ class DataManager {
             _countries.add(c)
             _countriesByName.put(c.name, c)
             _countryAggregates.AddCountry(c)
+            _countries.sortBy { it.name }
+        }
+        public fun DeleteCountry(c : Country2) {
+            _countries.remove(c)
+            _countriesByName.remove(c.name)
+            _countryAggregates.RemoveCountry(c)
             _countries.sortBy { it.name }
         }
 
@@ -126,6 +134,7 @@ class DataManager {
                 mapCountriesByName.put(dbc.name!!, c)
                 mapCountriesByGeoId.put(dbc.geoId!!, c)
             }
+            _countries.sortBy { it.name }
 
             onDataLoaded(enDataLoaded.CountriesOnly)
 
@@ -246,14 +255,14 @@ class DataManager {
 
             // ---------------------------
             Log.i(MainViewModel.LOG_TAG, "Creating aggregates")
-            _countryAggregates.setData(DateStart, DateEnd, _dailyCovidsByDate)
+            _countryAggregates.setData(DateStart, DateEnd, _dailyCovidsByDate, _countries)
 
             // ---------------------------
             Log.i(MainViewModel.LOG_TAG, "LoadDataFromDatabase: Finished")
             onDataLoaded(enDataLoaded.All)
             return true
         } catch (ex: Exception) {
-            Log.i(MainViewModel.LOG_TAG, "Error: ${ex.message}")
+            Log.e(MainViewModel.LOG_TAG, "Error: ${ex.message}")
             // TODO: Errorhandling?
             return false
         }
@@ -266,63 +275,211 @@ class DataManager {
     // Test data, no longer used
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-    private fun LoadDataFromCsv(context: Context): Boolean {
+//    private fun LoadDataFromCsv(context: Context): Boolean {
+//        try {
+//            val countries = LoadCountries_HardCoded()
+//
+//            _dailyCovidsByDate = LoadCasesFromCsvButMakeUpDeaths(context, countries).toList()
+//
+//            _countryAggregates.setData(DateStart, DateEnd, _dailyCovidsByDate, countries)
+//            return true
+//        } catch (ex: Exception) {
+//            // TODO: Errorhandling or logging
+//            return false
+//        }
+//    }
+//
+//
+//    // Real cases numbers are read from a csv file but deaths are made up in the method below
+//    private fun LoadCasesFromCsvButMakeUpDeaths(context: Context, countries: MutableMap</*name*/String, Country2>)
+//                                            : MutableMap<Date, MutableList<DailyCovid>> {
+//        try {
+//            val inputStream: InputStream = context.assets.open("ECPDC_CovidData1.csv")
+//            val csv = readCsv(inputStream)
+//
+//            val dailyCovidsByDate = mutableMapOf<Date, MutableList<DailyCovid>>()
+//
+//            for (iRow in 0..csv.Rows.count()-1) {
+//                val row = csv.Rows[iRow]
+//                val d = SimpleDateFormat("dd/MM/yyyy").parse(row[0])
+//                if (iRow == 0) {
+//                    DateStart = d
+//                } else if (iRow == csv.Rows.count()-1) {
+//                    DateEnd = d
+//                }
+//
+//                val daylies = mutableListOf<DailyCovid>()
+//
+//                for (i:Int in 1..row.count()-1) {
+//                    val c: Country2? = countries[csv.Headers[i]]
+//                    if (c == null)
+//                    {
+//                        Log.e(MainViewModel.LOG_TAG,"Header is not a recognised country: '${csv.Headers[i]}'")
+//                        //throw Exception("Header is not a recognised country: '${csv.Headers[i]}'")
+//                    }
+//                    else {
+//                        val numCases:Int = if (row[i] == "") 0 else row[i].toInt()
+//                        daylies.add(DailyCovid(c, d,
+//                            numCases,
+//                            /*Make up deaths*/ceil(numCases * .01).toInt()))
+//                    }
+//                }
+//                dailyCovidsByDate.put(d, daylies)
+//            }
+//
+//            return dailyCovidsByDate
+//        }
+//        catch (ex: Exception)
+//        {
+//            throw(ex)
+//        }
+//    }
+
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    // Update database
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    // Returns: Error message if fail, otherwise ""
+    suspend fun UpdateDatabase(newCountrys: List<Country2>?, newDailyCovids: List<DailyCovid>?,
+                   modifiedCountrys: List<Country2>?, modifiedDailyCovids: List<DailyCovid>?,
+                   deletedCountrys: List<Country2>?, deletedDailyCovids: List<DailyCovid>?,
+                   context: Context): String {
+        return withContext(Dispatchers.IO)
+        {UpdateDatabase2(newCountrys, newDailyCovids, modifiedCountrys, modifiedDailyCovids,
+                                        deletedCountrys, deletedDailyCovids, context)}
+    }
+
+    suspend private fun UpdateDatabase2(
+                    newCountrys: List<Country2>?, newDailyCovids: List<DailyCovid>?,
+                    modifiedCountrys: List<Country2>?, modifiedDailyCovids: List<DailyCovid>?,
+                    deletedCountrys: List<Country2>?, deletedDailyCovids: List<DailyCovid>?,
+                    context: Context): String {
+        Log.i(MainViewModel.LOG_TAG, "UpdateDatabase2: Started")
         try {
-            val countries = LoadCountries_HardCoded()
+            var errMsg = ""
+            val covidDatabase = CovidDatabase.getDatabase(context)
 
-            _dailyCovidsByDate = LoadCasesFromCsvButMakeUpDeaths(context, countries).toList()
+            errMsg = InsertToDatabase(newCountrys, newDailyCovids, covidDatabase)
+            if (errMsg.length > 0) { return errMsg }
 
-            _countryAggregates.setData(DateStart, DateEnd, _dailyCovidsByDate)
-            return true
+            errMsg = ModifyDatabaseItems(modifiedCountrys, modifiedDailyCovids, covidDatabase)
+            if (errMsg.length > 0) { return errMsg }
+
+            errMsg = DeleteFromDatabase(deletedCountrys, deletedDailyCovids, covidDatabase)
+            if (errMsg.length > 0) { return errMsg }
+
+            Log.i(MainViewModel.LOG_TAG, "InsertToDatabase: Finished")
+            return  ""
         } catch (ex: Exception) {
-            // TODO: Errorhandling or logging
-            return false
+            Log.e(MainViewModel.LOG_TAG, "UpdateDatabase2 Error: ${ex.message}")
+            return ex.message.toString()
         }
     }
 
-
-    // Real cases numbers are read from a csv file but deaths are made up in the method below
-    private fun LoadCasesFromCsvButMakeUpDeaths(context: Context, countries: MutableMap</*name*/String, Country2>)
-                                            : MutableMap<Date, MutableList<DailyCovid>> {
+    suspend private fun InsertToDatabase(newCountry2s: List<Country2>?, newDailyCovids: List<DailyCovid>?,
+                            covidDatabase: CovidDatabase): String {
+        Log.i(MainViewModel.LOG_TAG, "InsertToDatabase: Started")
         try {
-            val inputStream: InputStream = context.assets.open("ECPDC_CovidData1.csv")
-            val csv = readCsv(inputStream)
+            if ((newCountry2s != null) && (newCountry2s.count() > 0)) {
+                val newCountrys = mutableListOf<country>()
+                val newCountry_datas = mutableListOf<country_data>()
 
-            val dailyCovidsByDate = mutableMapOf<Date, MutableList<DailyCovid>>()
-
-            for (iRow in 0..csv.Rows.count()-1) {
-                val row = csv.Rows[iRow]
-                val d = SimpleDateFormat("dd/MM/yyyy").parse(row[0])
-                if (iRow == 0) {
-                    DateStart = d
-                } else if (iRow == csv.Rows.count()-1) {
-                    DateEnd = d
+                for (c in newCountry2s) {
+                    newCountrys.add(country(c.geoId, c.countryCode, c.name, c.continent!!.name))
+                    newCountry_datas.add(
+                        country_data(c.geoId, c.popData2019, 1 /*TODO: data_source assumed as 1 for now*/))
                 }
 
-                val daylies = mutableListOf<DailyCovid>()
-
-                for (i:Int in 1..row.count()-1) {
-                    val c: Country2? = countries[csv.Headers[i]]
-                    if (c == null)
-                    {
-                        Log.e(MainViewModel.LOG_TAG,"Header is not a recognised country: '${csv.Headers[i]}'")
-                        //throw Exception("Header is not a recognised country: '${csv.Headers[i]}'")
-                    }
-                    else {
-                        val numCases:Int = if (row[i] == "") 0 else row[i].toInt()
-                        daylies.add(DailyCovid(c, d,
-                            numCases,
-                            /*Make up deaths*/ceil(numCases * .01).toInt()))
-                    }
-                }
-                dailyCovidsByDate.put(d, daylies)
+                covidDatabase.countryDao().insertAll(*newCountrys.toTypedArray<country>())
+                covidDatabase.country_dataDao().insertAll(*newCountry_datas.toTypedArray<country_data>())
             }
 
-            return dailyCovidsByDate
+            if ((newDailyCovids != null) && (newDailyCovids.count() > 0)) {
+                val newCovid_datas = mutableListOf<covid_data>()
+
+                for (dc in newDailyCovids) {
+                    val dateAsString: String = SimpleDateFormat("dd-MMM-yy").format(dc.date)
+                    newCovid_datas.add(
+                        covid_data(dateAsString, dc.country.geoId, dc.covidCases, dc.covidDeaths,
+                            0.0 /* Not using Cumulative_number_for_14_days_of_COVID_19_cases_per_100000 */))
+                }
+
+                covidDatabase.covid_dataDao().insertAll(*newCovid_datas.toTypedArray<covid_data>())
+            }
+
+            Log.i(MainViewModel.LOG_TAG, "InsertToDatabase: Finished")
+            return ""
+        } catch (ex: Exception) {
+            Log.e(MainViewModel.LOG_TAG, "InsertToDatabase Error: ${ex.message}")
+            return ex.message.toString()
         }
-        catch (ex: Exception)
-        {
-            throw(ex)
+    }
+
+    suspend private fun ModifyDatabaseItems(modifiedCountrys: List<Country2>?, modifiedDailyCovids: List<DailyCovid>?,
+                                         covidDatabase: CovidDatabase): String {
+        Log.i(MainViewModel.LOG_TAG, "ModifyDatabaseItems: Started")
+        try {
+            if ((modifiedCountrys != null) && (modifiedCountrys.count() > 0)) {
+                for (modC in modifiedCountrys) {
+                    covidDatabase.countryDao().update(
+                        country(modC.geoId, modC.countryCode, modC.name, modC.continent!!.name))
+                    covidDatabase.country_dataDao().update(
+                        country_data(modC.geoId, modC.popData2019, 1 /*TODO: data_source assumed as 1 for now*/))
+                }
+            }
+
+            if ((modifiedDailyCovids != null) && (modifiedDailyCovids.count() > 0)) {
+                for (dc in modifiedDailyCovids) {
+                    val dateAsString: String = SimpleDateFormat("dd-MMM-yy").format(dc.date)
+                    covidDatabase.covid_dataDao().update(
+                        covid_data(dateAsString, dc.country.geoId, dc.covidCases, dc.covidDeaths,
+                            0.0 /* Not using Cumulative_number_for_14_days_of_COVID_19_cases_per_100000 */))
+                }
+            }
+
+            Log.i(MainViewModel.LOG_TAG, "ModifyDatabaseItems: Finished")
+            return ""
+        } catch (ex: Exception) {
+            Log.e(MainViewModel.LOG_TAG, "ModifyDatabaseItems Error: ${ex.message}")
+            return ex.message.toString()
+        }
+    }
+
+    suspend private fun DeleteFromDatabase(deletedCountrys: List<Country2>?, deletedDailyCovids: List<DailyCovid>?,
+                                         covidDatabase: CovidDatabase): String {
+        Log.i(MainViewModel.LOG_TAG, "DeleteFromDatabase: Started")
+        try {
+            if ((deletedCountrys != null) && (deletedCountrys.count() > 0)) {
+                for (c in deletedCountrys) {
+                    // Delete data first to ensure referential integrity
+                    covidDatabase.country_dataDao().delete(
+                        country_data(c.geoId, 0, 0))
+                    covidDatabase.countryDao().delete(country(c.geoId, "", "", ""))
+                }
+            }
+
+            if ((deletedDailyCovids != null) && (deletedDailyCovids.count() > 0)) {
+                val deletingCovid_datas = mutableListOf<covid_data>()
+
+                for (dc in deletedDailyCovids) {
+                    val dateAsString: String = SimpleDateFormat("dd-MMM-yy").format(dc.date)
+                    for (dbDc in covidDatabase.covid_dataDao()
+                                    .loadAllByGeoIdAndDate(dc.country.geoId, dateAsString)) {
+                        deletingCovid_datas.add(dbDc)
+                    }
+                }
+
+                for (dbDc in deletingCovid_datas) {
+                    covidDatabase.covid_dataDao().delete(dbDc)
+                }
+            }
+
+            Log.i(MainViewModel.LOG_TAG, "DeleteFromDatabase: Finished")
+            return ""
+        } catch (ex: Exception) {
+            Log.e(MainViewModel.LOG_TAG, "DeleteFromDatabase Error: ${ex.message}")
+            return ex.message.toString()
         }
     }
 

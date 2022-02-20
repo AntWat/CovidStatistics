@@ -6,7 +6,6 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class covid_data(
-    @PrimaryKey val id: Int,
     @ColumnInfo(name = "dateRep") val dateRep: String?,
     @ColumnInfo(name = "geoId") val geoId: String?,
     @ColumnInfo(name = "cases") val cases: Int?,
@@ -14,3 +13,6 @@ data class covid_data(
     @ColumnInfo(name = "Cumulative_number_for_14_days_of_COVID-19_cases_per_100000")
                   val Cumulative_number_for_14_days_of_COVID_19_cases_per_100000: Double,
 )
+{
+    @PrimaryKey(autoGenerate = true) var id: Int = 0
+}

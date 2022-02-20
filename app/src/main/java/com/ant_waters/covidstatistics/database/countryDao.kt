@@ -1,9 +1,7 @@
 package com.ant_waters.dbroomtest.database
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import android.content.ClipData
+import androidx.room.*
 import com.ant_waters.covidstatistics.database.country
 
 @Dao
@@ -22,4 +20,7 @@ interface countryDao {
 
     @Delete
     fun delete(country: country)
+
+    @Update
+    fun update(country: country)
 }

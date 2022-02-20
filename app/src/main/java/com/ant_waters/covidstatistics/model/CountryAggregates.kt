@@ -14,6 +14,17 @@ class CountryAggregates {
         Aggregates.add(Pair<Country2, CountryAggregate>(c, agg))
     }
 
+    public fun RemoveCountry(c: Country2) {
+        var kvp: Pair<Country2, CountryAggregate>? = null
+        for (agg in Aggregates) {
+            if (agg.first == c) {
+                kvp=agg
+                break
+            }
+        }
+        if (kvp != null) { Aggregates.remove(kvp) }
+    }
+
     var Aggregates = mutableListOf<Pair<Country2, CountryAggregate>>()
 
     val SortedByCountry: List<Pair<Country2, CountryAggregate>>
@@ -61,7 +72,8 @@ class CountryAggregates {
         }
 
     fun setData(dateStart: Date, dateEnd: Date,
-                dailyCovidsByDate: List<Pair<Date, MutableList<DailyCovid>>>) {
+                dailyCovidsByDate: List<Pair<Date, MutableList<DailyCovid>>>,
+                countries: List<Country2>) {
         DateStart = dateStart
         DateEnd = dateEnd
 
@@ -81,6 +93,22 @@ class CountryAggregates {
             val c:Country2 = cct.key
             Aggregates.add(Pair<Country2, CountryAggregate>(c, CountryAggregate(c, dateStart, dateEnd,
                                     countryCasesTotals[c]!!, countryDeathsTotals[c]!!)))
+        }
+
+        // Add in 0 aggregates for countries that didn't have any data (e.g. dummy countries added for testing db routines)
+        // Otherwise they won't appear on the home page
+        for (c in countries) {
+            var found: Boolean = false
+            for (agg in Aggregates) {
+                if (agg.first == c) {
+                    found = true
+                    break
+                }
+            }
+            if (!found) {
+                Aggregates.add(Pair<Country2, CountryAggregate>(c,
+                    CountryAggregate(c, DataManager.DateStart, DataManager.DateEnd, 0, 0)))
+            }
         }
     }
 

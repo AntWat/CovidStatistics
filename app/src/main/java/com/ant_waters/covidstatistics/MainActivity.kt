@@ -32,10 +32,8 @@ import com.ant_waters.covidstatistics.model.DataManager
 import com.ant_waters.covidstatistics.ui.edit__countries.EditCountriesFragment
 
 /* TODO Items
-* ) Database CRUD
 * ) floating button on home page
 * ) Offload strings to resources
-* ) Tidy up, sanitise, release as Kotlin demo, announce online.
 *) Search TODO items
 *  */
 

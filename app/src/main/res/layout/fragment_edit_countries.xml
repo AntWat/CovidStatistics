@@ -58,15 +58,13 @@
             android:minWidth="160dp"></Spinner>
 
         <!-- geoId -->
-        <EditText
-            android:id="@+id/editText_geoId"
+        <TextView
+            android:id="@+id/textView_geoId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
-            android:hint="geoId (2 characters)"
-            android:inputType="text"
-            android:maxLength="2"></EditText>
+            android:hint="geoId"></TextView>
 
         <!-- territoryCode -->
         <EditText
@@ -135,6 +133,27 @@
             android:text="Add New Country"
             android:textSize="25dp"></TextView>
 
+        <!-- country name -->
+        <EditText
+            android:id="@+id/editText_addCountryName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="end"
+            android:hint="new country name"
+            android:inputType="text"
+            ></EditText>
+        <!-- geoId -->
+        <EditText
+            android:id="@+id/editText_addCountryGeoId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:hint="geoId (2 characters)"
+            android:inputType="text"
+            android:maxLength="2"></EditText>
+
         <!-- Add Country -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -142,17 +161,6 @@
             android:layout_marginTop="20dp"
             android:gravity="center_horizontal"
             android:orientation="horizontal">
-
-            <!-- country name -->
-            <EditText
-                android:id="@+id/editText_addCountryName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="end"
-                android:hint="new country name"
-                android:inputType="text"
-                ></EditText>
 
             <Button
                 android:id="@+id/btn__addCountryYes"

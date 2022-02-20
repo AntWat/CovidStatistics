@@ -46,16 +46,19 @@ class HomeItemAdapter(private val context: Fragment,
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         if (MainViewModel.DataInitialised.value == enDataLoaded.CountriesOnly)
             displayCountry(holder, position)
-        else  if (MainViewModel.DataInitialised.value==enDataLoaded.All)
+        else if (MainViewModel.DataInitialised.value==enDataLoaded.All)
             displayCountryAndData(holder, position)
 
         holder.itemView.setOnClickListener(View.OnClickListener {
             val cpf = CountryPopupFragment()
 
             // Supply country as an argument.
+            var c: Country2 = countries[position]
+            if (MainViewModel.DataInitialised.value==enDataLoaded.All) {
+                val agg = sortedAggregates!![position]
+                c = agg.first
+            }
             val args = Bundle()
-            val agg = sortedAggregates!![position]
-            val c = agg.first
             args.putString("geoId", c.geoId)
             cpf.setArguments(args)
 

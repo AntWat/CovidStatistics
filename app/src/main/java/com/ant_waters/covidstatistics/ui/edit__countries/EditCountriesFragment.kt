@@ -13,19 +13,14 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import com.ant_waters.covidstatistics.MainViewModel
 import com.ant_waters.covidstatistics.R
-import com.ant_waters.covidstatistics.enDataLoaded
 import com.ant_waters.covidstatistics.model.Continent2
 import com.ant_waters.covidstatistics.model.Country2
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 import com.ant_waters.covidstatistics.model.DataManager
 import com.ant_waters.covidstatistics.ui.CustomArrayAdapterDisplayingName
-import kotlin.reflect.KMutableProperty
-import kotlin.reflect.KMutableProperty0
-import kotlin.reflect.KVisibility
 import android.widget.TextView
 import com.ant_waters.covidstatistics.Utils.Utils
-
 
 class EditCountriesFragment  : DialogFragment()  {
 
@@ -36,6 +31,7 @@ class EditCountriesFragment  : DialogFragment()  {
     var country_items: MutableList<Country2> = mutableListOf<Country2>()
     var new_countries: MutableList<Country2> = mutableListOf<Country2>()
     var modified_countries: MutableList<Country2> = mutableListOf<Country2>()
+    var deleted_countries: MutableList<Country2> = mutableListOf<Country2>()
 
     lateinit var continent_items: List<Continent2>
 
@@ -47,7 +43,7 @@ class EditCountriesFragment  : DialogFragment()  {
     lateinit var spinner__countryName: Spinner
     lateinit var btn__addCountry: Button
     lateinit var spinner__continentName: Spinner
-    lateinit var editText_geoId: EditText
+    lateinit var textView_geoId: TextView
     lateinit var editText_territoryCode: EditText
     lateinit var editText_population: EditText
     lateinit var btn_cancel: Button
@@ -55,6 +51,7 @@ class EditCountriesFragment  : DialogFragment()  {
     lateinit var btn_ok: Button
 
     lateinit var editText_addCountryName: EditText
+    lateinit var editText_addCountryGeoId: EditText
     lateinit var btn__addCountryYes: Button
     lateinit var btn__addCountryNo: Button
 
@@ -135,7 +132,7 @@ class EditCountriesFragment  : DialogFragment()  {
         spinner__countryName = myView.findViewById<Spinner>(R.id.spinner__countryName)
         btn__addCountry = myView.findViewById<Button>(R.id.btn__addCountry)
         spinner__continentName = myView.findViewById<Spinner>(R.id.spinner__continentName)
-        editText_geoId = myView.findViewById<EditText>(R.id.editText_geoId)
+        textView_geoId = myView.findViewById<TextView>(R.id.textView_geoId)
         editText_territoryCode = myView.findViewById<EditText>(R.id.editText_territoryCode)
         editText_population = myView.findViewById<EditText>(R.id.editText_population)
         btn_cancel = myView.findViewById<Button>(R.id.btn_cancel)
@@ -143,6 +140,7 @@ class EditCountriesFragment  : DialogFragment()  {
         btn_ok = myView.findViewById<Button>(R.id.btn_ok)
 
         editText_addCountryName = myView.findViewById<EditText>(R.id.editText_addCountryName)
+        editText_addCountryGeoId = myView.findViewById<EditText>(R.id.editText_addCountryGeoId)
         btn__addCountryYes = myView.findViewById<Button>(R.id.btn__addCountryYes)
         btn__addCountryNo = myView.findViewById<Button>(R.id.btn__addCountryNo)
     }
@@ -172,7 +170,7 @@ class EditCountriesFragment  : DialogFragment()  {
         if (setSpinner__countryName) {
             spinner__countryName.setSelection(country_items.indexOf(currentCountry)) }
         spinner__continentName.setSelection(continent_items.indexOf(currentCountry.continent))
-        editText_geoId.setText(currentCountry.geoId)
+        textView_geoId.setText(currentCountry.geoId)
         editText_territoryCode.setText(currentCountry.countryCode)
         editText_population.setText(currentCountry.popData2019.toString())
     }
@@ -182,8 +180,8 @@ class EditCountriesFragment  : DialogFragment()  {
         // --------------- Validate
         var population = 0
 
-        var geoId = editText_geoId.text.toString()
-        if (geoId.length != 2) { return "geoId must be 2 characters!" }
+//        var geoId = textView_geoId.text.toString()
+//        if (geoId.length != 2) { return "geoId must be 2 characters!" }
 
         var countryCode = editText_territoryCode.text.toString()
         if (countryCode.length != 3) { return "countryCode must be 3 characters!" }
@@ -196,8 +194,8 @@ class EditCountriesFragment  : DialogFragment()  {
         updatePropertyIfChanged<Continent2?>(currentCountry.continent,
             spinner__continentName.selectedItem as Continent2, fun(v) { currentCountry.continent = v })
 
-        updatePropertyIfChanged<String>(currentCountry.geoId,
-            geoId, fun(v) { currentCountry.geoId = v })
+//        updatePropertyIfChanged<String>(currentCountry.geoId,
+//            geoId, fun(v) { currentCountry.geoId = v })
 
         updatePropertyIfChanged<String>(currentCountry.countryCode,
             countryCode, fun(v) { currentCountry.countryCode = v })
@@ -212,7 +210,8 @@ class EditCountriesFragment  : DialogFragment()  {
         if (oldVal != newVal)
         {
             updatefunc(newVal)
-            if (!modified_countries.contains(currentCountry)) { modified_countries.add(currentCountry)}
+            if (!new_countries.contains(currentCountry)
+                && !modified_countries.contains(currentCountry)) { modified_countries.add(currentCountry)}
         }
     }
 
@@ -258,7 +257,21 @@ class EditCountriesFragment  : DialogFragment()  {
 
     fun btn_delete_click() {
         try {
-            // TODO:
+            var index = spinner__countryName.selectedItemId.toInt() -1  // Next item to select
+            if (index < 0) { index = 0 }
+
+            country_items.remove(currentCountry)
+            if (modified_countries.contains(currentCountry)) { modified_countries.remove(currentCountry) }
+            if (new_countries.contains(currentCountry))
+            {
+                new_countries.remove(currentCountry)
+            } else {
+                deleted_countries.add(currentCountry)
+            }
+
+            currentCountry = country_items[index]
+            SetCountryListAdapter()
+            RefreshCountry(true)
         }
         catch (ex:Exception) { LogAndShowError(ex)}
     }
@@ -273,6 +286,7 @@ class EditCountriesFragment  : DialogFragment()  {
 
             // TODO: Confirm Save
 
+            // ----------- Update the global lists (instead pf re-loading the database, which takes unneccessarily long
             for (newC in new_countries) {
                 DataManager.AddCountry(newC)
             }
@@ -281,17 +295,24 @@ class EditCountriesFragment  : DialogFragment()  {
                 val c = DataManager.CountriesByName[modC.name]
                 if (c == null) { break }
                 c!!.continent = modC.continent
-                c!!.geoId = modC.geoId
+                //c!!.geoId = modC.geoId
                 c!!.countryCode = modC.countryCode
                 c!!.popData2019 = modC.popData2019
             }
 
-            // TODO: Update DB
+            for (newC in deleted_countries) {
+                DataManager.DeleteCountry(newC)
+            }
 
-            // Refresh the display
             MainViewModel.updateDisplayOptionsChanged()
 
-            getDialog()?.dismiss()
+            // ----------- Update the database, so changes persist if the app is restarted
+            MainViewModel.UpdateDatabase(new_countries, null,
+                modified_countries, null,
+                deleted_countries, null,
+                this.requireContext(),
+                fun() { getDialog()?.dismiss() },
+                fun(errMsg) { ShowError(errMsg)})
         }
         catch (ex:Exception) { LogAndShowError(ex)}
     }
@@ -299,16 +320,17 @@ class EditCountriesFragment  : DialogFragment()  {
     fun btn__addCountryYes_click() {
         try {
             var countryName = editText_addCountryName.text.toString()
+            var geoId = editText_addCountryGeoId.text.toString()
 
-            if (countryName.length > 0) {
-                currentCountry = Country2(countryName, "XX", "XXX", 0, "Asia")
+            if ((countryName.length > 0) && (geoId.length > 0)) {
+                currentCountry = Country2(countryName, geoId, "XXX", 0, "Asia")
                 country_items.add(0, currentCountry)
                 new_countries.add(currentCountry)
                 SetCountryListAdapter()
                 RefreshCountry(true)
+                linear_layout__edit_country.visibility = VISIBLE
+                linear_layout__add_country.visibility = GONE
             }
-            linear_layout__edit_country.visibility = VISIBLE
-            linear_layout__add_country.visibility = GONE
         }
         catch (ex:Exception) { LogAndShowError(ex)}
     }

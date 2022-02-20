@@ -1,9 +1,7 @@
 package com.ant_waters.dbroomtest.database
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
+import com.ant_waters.covidstatistics.database.country
 import com.ant_waters.covidstatistics.database.country_data
 
 @Dao
@@ -21,5 +19,9 @@ interface country_dataDao {
     fun insertAll(vararg country_datas: country_data)
 
     @Delete
-    fun delete(user: country_data)
+    fun delete(country_data: country_data)
+
+    @Update
+    fun update(country_data: country_data)
+
 }

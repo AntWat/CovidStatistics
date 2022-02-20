@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.ant_waters.covidstatistics.model.Country2
+import com.ant_waters.covidstatistics.model.DailyCovid
 import com.ant_waters.covidstatistics.model.DataManager
 import com.ant_waters.covidstatistics.ui.display__options.DisplayOptions
 import kotlinx.coroutines.GlobalScope
@@ -50,14 +52,37 @@ public class MainViewModel : ViewModel() {
         public fun updateDisplayOptionsChanged() {
             _displayOptionsChanged.postValue(SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"))
         }
+
+        // This is private because the loaded data is static, and is accessed via the DataManager Companion Object
+        private var _dataManager = DataManager()
+
+        private var _isInitialised = false
+
+        // -------------------------------
+        public fun UpdateDatabase(newCountrys: List<Country2>?, newDailyCovids: List<DailyCovid>?,
+                      modifiedCountrys: List<Country2>?, modifiedDailyCovids: List<DailyCovid>?,
+                      deletedCountrys: List<Country2>?, deletedDailyCovids: List<DailyCovid>?,
+                      context: Context, onSuccess:()->Unit, onError:(String)->Unit): Unit {
+
+            GlobalScope.launch {
+                val errMsg = _dataManager.UpdateDatabase(newCountrys, newDailyCovids,
+                    modifiedCountrys, modifiedDailyCovids,
+                    deletedCountrys, deletedDailyCovids,
+                    context)
+                if (errMsg.length == 0) {
+                    onSuccess()
+                } else {
+                    onError(errMsg)
+                }
+                MainViewModel.updateDisplayOptionsChanged()
+            }
+        }
+
+
     }
 
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-    // This is private because the loaded data is static, and is accessed via the DataManager Companion Object
-    private var _dataManager = DataManager()
-
-    private var _isInitialised = false
     public fun init(context: Context) {
         if (_isInitialised) {return}
 

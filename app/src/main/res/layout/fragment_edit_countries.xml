@@ -28,23 +28,24 @@
             android:gravity="center_horizontal"
             android:orientation="horizontal">
 
+            <Button
+                android:id="@+id/btn__addCountry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="0dp"
+                android:layout_marginStart="10dp"
+                android:text="+"></Button>
+
             <Spinner
                 android:id="@+id/spinner__countryName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:gravity="center"
                 android:minWidth="160dp"></Spinner>
 
-            <Button
-                android:id="@+id/btn__addCountry"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:minWidth="0dp"
-                android:text="+"></Button>
         </LinearLayout>
 
         <!-- Continent -->
@@ -64,7 +65,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
-            android:hint="geoId"></TextView>
+            android:hint="geoId"
+            android:textSize="20dp"></TextView>
 
         <!-- territoryCode -->
         <EditText
@@ -99,22 +101,28 @@
                 android:id="@+id/btn_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Cancel" />
+                android:minWidth="0dp"
+                android:text="Cancel"
+                android:textSize="10dp"/>
 
             <Button
                 android:id="@+id/btn_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:text="Delete" />
+                android:layout_marginStart="20dp"
+                android:minWidth="0dp"
+                android:text="Delete"
+                android:textSize="10dp"/>
 
             <!--Accept all changes-->
             <Button
                 android:id="@+id/btn_ok"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:text="ok" />
+                android:layout_marginStart="20dp"
+                android:minWidth="0dp"
+                android:text="ok"
+                android:textSize="10dp"/>
         </LinearLayout>
 
     </LinearLayout>
@@ -168,7 +176,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
                 android:minWidth="0dp"
-                android:text="Yes"></Button>
+                android:text="Yes"
+                android:textSize="10dp"></Button>
 
             <Button
                 android:id="@+id/btn__addCountryNo"
@@ -176,7 +185,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
                 android:minWidth="0dp"
-                android:text="No"></Button>
+                android:text="No"
+                android:textSize="10dp"></Button>
 
         </LinearLayout>
 

@@ -94,7 +94,8 @@ public class MainViewModel : ViewModel() {
         GlobalScope.launch {
             val elapsedTime= measureTimeMillis {
                 _dataManager.loadData(context,
-                    fun(state:enDataLoaded) { updateDataInitialised(state) })
+                fun(state:enDataLoaded) { updateDataInitialised(state) })
+// Or:                ::updateDataInitialised )
             }
             Log.i(MainViewModel.LOG_TAG, "LoadData: Finished in ${elapsedTime} millisecs")
         }

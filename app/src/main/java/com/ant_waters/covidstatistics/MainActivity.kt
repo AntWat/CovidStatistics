@@ -149,7 +149,7 @@ class MainActivity : AppCompatActivity() {
             msg += "      The database contains real COVID-19 data for the year 2020, downloaded from:\n"
             msg += "      https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide\n"
             msg += "   *) Use of the 'Navigation Drawer Activity' Android project template.\n"
-            msg += "   *) TODO: Database CUD.\n"
+            msg += "   *) Database CRUD operations.\n"
             msg += "   *) Display of list data including icons (country flags), using a Recycler View.\n"
             msg += "   *) Early display of partial data (just countries, without statistics)\n"
             msg += "   *) Showing a progress spinner while data is loading.\n"
